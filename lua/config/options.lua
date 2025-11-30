@@ -37,6 +37,7 @@ vim.g.rust_analyzer_mason = true
 vim.g.statusline = "heirline"
 
 vim.g.suda_smart_edit = 1
+vim.g.suda_noninteractive = 1
 
 local opt = vim.opt
 opt.cmdheight = 0
@@ -97,6 +98,6 @@ opt.clipboard = "unnamedplus"
 
 opt.title = true
 opt.titlestring = "neovim"
-opt.shell = "nu"
-opt.shellcmdflag = "-c" -- Nushell 使用 -c 标志运行命令
-opt.shellxquote = "" -- 避免额外的引号干扰
+-- opt.shell = "nu"
+-- opt.shellcmdflag = "-c" -- Nushell 使用 -c 标志运行命令
+-- opt.shellxquote = "" -- 避免额外的引号干扰

@@ -1,0 +1,51 @@
+-- Normal mode --
+-----------------
+vim.keymap.set("n", "<C-n>", "5j", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-p>", "5k", { noremap = true, silent = true })
+vim.keymap.set("n", "<Space>", "<NOP>", { noremap = true, silent = true })
+vim.keymap.set("n", "q", "<NOP>", { noremap = true, silent = true })
+vim.keymap.set("n", "J", "<NOP>", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-b>", "<NOP>", { noremap = true, silent = true })
+vim.keymap.set("n", "<tab>", "w", { noremap = true, silent = true })
+
+vim.keymap.set("n", "L", "$", { noremap = true, silent = true, desc = "Move to end of line" })
+vim.keymap.set("n", "H", "^", { noremap = true, silent = true, desc = "Move to first non-blank character" })
+vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { noremap = true, silent = true, desc = "Increase window height" })
+vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { noremap = true, silent = true, desc = "Decrease window height" })
+vim.keymap.set("n", "M", "J", { noremap = true, silent = true, desc = "Join the current line with the next line" })
+
+vim.keymap.set("n", "<leader>/", "gcc", { remap = true, silent = true, desc = "Toggle Comment linewise" })
+vim.keymap.set("v", "<leader>/", "gc", { remap = true, desc = "Toggle Comment lineise" })
+
+-----------------
+-- Visual mode --
+-----------
+vim.keymap.set("v", "<C-n>", "5j", { noremap = true, silent = true })
+vim.keymap.set("v", "<C-p>", "5k", { noremap = true, silent = true })
+vim.keymap.set("v", "L", "$h", { noremap = true, silent = true, desc = "Move to end of line" })
+vim.keymap.set("v", "H", "^", { noremap = true, silent = true, desc = "Move to first non-blank character" })
+vim.keymap.set("v", "<S-Tab>", "<gv", { noremap = true, silent = true, desc = "Unindent line" })
+vim.keymap.set("v", "<Tab>", ">gv", { noremap = true, silent = true, desc = "Unindent line" })
+vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv-gv", { noremap = true, silent = true, desc = "Move line down" })
+vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv-gv", { noremap = true, silent = true, desc = "Move line up" })
+vim.keymap.set("v", "J", "<NOP>", { noremap = true, silent = true })
+vim.keymap.set("v", "J", "j", { noremap = true, silent = true })
+vim.keymap.set("v", "K", "k", { noremap = true, silent = true })
+
+-----------------
+-- Insert mode --
+-----------------
+vim.keymap.set("i", "<A-k>", "<Esc>:m .-2<CR>==gi", { noremap = true, silent = true, desc = "Move line up" })
+vim.keymap.set("i", "<A-j>", "<Esc>:m .+1<CR>==gi", { noremap = true, silent = true, desc = "Move line down" })
+
+-- Stay in indent mode
+vim.keymap.set("v", "<", "<gv", { noremap = true, silent = true })
+vim.keymap.set("v", ">", ">gv", { noremap = true, silent = true })
+vim.keymap.set("o", "H", "^", { noremap = true, silent = true, desc = "Move to first non-blank character" })
+vim.keymap.set("o", "L", "$", { noremap = true, silent = true, desc = "Move to end of line" })
+
+-- quit
+vim.keymap.set("n", "<leader>q", "<cmd>q<cr>", { noremap = true, silent = true , desc = "Quit" })
+vim.keymap.set("n", "<leader>Q", "<cmd>qa<cr>", { noremap = true, silent = true , desc = "Quit All" })
+vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { noremap = true, silent = true, desc = "Save File" })
+

@@ -1,8 +1,16 @@
 {
   "plugins": {
+    "mini.pairs": {
+      "rev": "472ec50092a3314ec285d2db2baa48602d71fe93",
+      "src": "https://github.com/nvim-mini/mini.pairs"
+    },
     "nvim": {
       "rev": "ce4a8e0d5267e67056f9f4dcf6cb1d0933c8ca00",
       "src": "https://github.com/catppuccin/nvim"
+    },
+    "nvim-osc52": {
+      "rev": "04cfaba1865ae5c53b6f887c3ca7304973824fb2",
+      "src": "https://github.com/ojroques/nvim-osc52"
     },
     "snacks.nvim": {
       "rev": "fe7cfe9800a182274d0f868a74b7263b8c0c020b",

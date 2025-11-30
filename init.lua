@@ -1,5 +1,10 @@
 require("config.options")
+require("config.keymaps")
+
+_G.Utils = require("utils")
 
 require("plugins.catppuccin")
 require("plugins.snacks")
 require("plugins.sudo")
+require("plugins.osc52")
+require("plugins.mini")

@@ -10,8 +10,11 @@ require("snacks").setup({
         win = {
             input = {
                 keys = {
-                    -- ["<Esc>"] = { "close", mode = { "n", "i" } },
-                    ["<C-t>"] = { "edit_tab", mode = { "n", "i" } },
+                    ["<c-p>"] = { "select_and_prev", mode = { "i", "n" } },
+                    ["<c-n>"] = { "select_and_next", mode = { "i", "n" } },
+                    ["<S-Tab>"] = { "list_up", mode = { "i", "n" } },
+                    ["<Tab>"] = { "list_down", mode = { "i", "n" } },
+                    ["<c-l>"] = { "clear_input", mode = { "n", "i" } },
                 },
             },
         },
@@ -48,6 +51,9 @@ require("snacks").setup({
             { icon = " ", title = "Keymaps", section = "keys", indent = 2, padding = 1 },
         },
     },
+    explorer = {
+      replace_netrw = true, -- Replace netrw with the snacks explorer
+    },
     image = {
         enabled = false,
         doc = { enabled = true, inline = false, float = false, max_width = 80, max_height = 20 },
@@ -72,7 +78,7 @@ local map = function(key, func, desc)
     vim.keymap.set("n", key, func, { desc = desc })
 end
 map("<leader>e", Snacks.picker.explorer, "File Explorer")
-map("<leader>ff", Snacks.picker.smart, "Smart find file")
+map("<leader><leader>", Snacks.picker.smart, "Smart find file")
 map("<leader>fo", Snacks.picker.recent, "Find recent file")
 map("<leader>fw", Snacks.picker.grep, "Find content")
 map("<leader>fh", function()
@@ -82,7 +88,7 @@ map("<leader>fl", Snacks.picker.picker_layouts, "Find picker layout")
 map("<leader>fk", function()
     Snacks.picker.keymaps({ layout = "dropdown" })
 end, "Find keymap")
-map("<leader><leader>", function()
+map("<leader>ff", function()
     Snacks.picker.buffers({ sort_lastused = true })
 end, "Find buffers")
 map("<leader>fm", Snacks.picker.marks, "Find mark")
