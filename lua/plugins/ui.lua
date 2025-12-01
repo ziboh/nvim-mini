@@ -31,3 +31,20 @@ require("bufferline").setup({
 		},
 	},
 })
+
+local keys = {
+	{ "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle Pin" },
+	{ "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete Non-Pinned Buffers" },
+	{ "<leader>br", "<Cmd>BufferLineCloseRight<CR>", desc = "Delete Buffers to the Right" },
+	{ "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete Buffers to the Left" },
+	{ "<leader>bc", "<Cmd>BufferLineCloseOthers<CR>", desc = "Close All Other Buffers" },
+	{ "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
+	{ "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
+	{ "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
+	{ "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
+	{ "<C-A-F10>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
+	{ "<C-A-1>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
+	{ "<C-]>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
+}
+
+Utils.setup_keymaps(keys)

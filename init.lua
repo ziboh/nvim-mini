@@ -3,7 +3,6 @@ require("config.options")
 require("config.keymaps")
 require("config.lsp")
 
-
 require("plugins.catppuccin")
 require("plugins.snacks")
 require("plugins.ui")
@@ -15,3 +14,5 @@ require("plugins.rooter")
 require("plugins.formatting")
 require("plugins.treesitter")
 require("plugins.git")
+require("plugins.dial")
+require("plugins.wildfire")
