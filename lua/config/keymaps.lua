@@ -90,3 +90,5 @@ vim.keymap.set("n", "<C-|>", "<cmd>split<cr>", { noremap = true, silent = true, 
 vim.keymap.set("n", "<leader>ld", function()
 	vim.diagnostic.open_float()
 end, { noremap = true, silent = true, desc = "Hover diagnostics" })
+
+vim.keymap.set("n", "<leader>c", function() Snacks.bufdelete() end, { noremap = true, silent = true, desc = "Close buffer" })

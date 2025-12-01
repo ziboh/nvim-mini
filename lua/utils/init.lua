@@ -2,6 +2,7 @@
 --- @field icons utils.icons
 --- @field lsp utils.lsp
 local M = {}
+
 setmetatable(M, {
 	__index = function(t, k)
 		t[k] = require("utils." .. k)

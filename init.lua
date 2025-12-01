@@ -6,6 +6,7 @@ require("config.lsp")
 
 require("plugins.catppuccin")
 require("plugins.snacks")
+require("plugins.ui")
 require("plugins.sudo")
 require("plugins.osc52")
 require("plugins.mini")
