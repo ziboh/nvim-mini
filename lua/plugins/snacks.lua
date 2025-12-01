@@ -10,6 +10,50 @@ require("snacks").setup({
 	picker = {
 		matcher = { frecency = true, cwd_bonus = true, history_bonus = true },
 		formatters = { icon_width = 3 },
+		actions = {
+			---@param picker snacks.Picker
+			clear_input = function(picker)
+				vim.api.nvim_buf_set_lines(picker.input.win.buf, 0, -1, false, {})
+			end,
+			delect_file = function(picker)
+				local options = { "Yes", "No" }
+				vim.ui.select(options, {}, function(choice)
+					if choice == "Yes" then
+						local items = picker:selected({ fallback = true })
+						for _, item in ipairs(items) do
+							local path = item._path
+							local ok, err = pcall(vim.fn.delete, path, "rf")
+							if ok then
+								Snacks.bufdelete({ file = path, force = true })
+							else
+								Snacks.notify.error("Failed to delete `" .. path .. "`:\n- " .. err)
+							end
+							picker:close()
+						end
+						Snacks.picker.resume()
+					end
+				end)
+			end,
+			tcd_cwd = function(_, item)
+				vim.cmd.tcd(item.cwd)
+			end,
+			tcd_root = function(_, item)
+				vim.cmd.tcd(vim.fs.root(item._path, ".git"))
+			end,
+		},
+		on_show = function(picker)
+			local input = picker.input.win
+			if input then
+				input:on("InsertEnter", function()
+					vim.opt.titlestring = "input"
+					-- The title you set will not take effect immediately; you need to manually execute redraw.
+					vim.cmd("redraw")
+				end)
+				input:on("InsertLeave", function()
+					vim.opt.titlestring = "neovim"
+				end)
+			end
+		end,
 		win = {
 			input = {
 				keys = {
@@ -23,34 +67,31 @@ require("snacks").setup({
 		},
 	},
 	dashboard = {
-		enabled = true,
 		preset = {
+			---@type snacks.dashboard.Item[]
 			keys = {
-				{ icon = "󰈞 ", key = "f", desc = "Find files", action = ":lua Snacks.picker.smart()" },
-				{ icon = " ", key = "o", desc = "Find history", action = "lua Snacks.picker.recent()" },
-				{ icon = " ", key = "e", desc = "New file", action = ":enew" },
-				{ icon = " ", key = "o", desc = "Recent files", action = ":lua Snacks.picker.recent()" },
+				{ icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+				{ icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+				{ icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
+				{ icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
 				{
-					icon = "󰔛 ",
-					key = "P",
-					desc = "Lazy Profile",
-					action = ":Lazy profile",
-					enabled = package.loaded.lazy ~= nil,
+					icon = " ",
+					key = "c",
+					desc = "Config",
+					action = ":lua Snacks.picker.files({ cwd = vim.fn.stdpath('config'), confirm = { 'tcd_cwd', 'jump' } })",
 				},
-				{ icon = " ", key = "M", desc = "Mason", action = ":Mason", enabled = package.loaded.lazy ~= nil },
+				{
+					icon = " ",
+					key = "p",
+					desc = "Projects",
+					action = ":lua Snacks.picker.projects()",
+				},
 				{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
 			},
-			header = [[
-░  ░░░░░░░░  ░░░░  ░░░      ░░░  ░░░░░░░
-▒  ▒▒▒▒▒▒▒▒  ▒▒▒▒  ▒▒  ▒▒▒▒  ▒▒  ▒▒▒▒▒▒▒
-▓  ▓▓▓▓▓▓▓▓        ▓▓  ▓▓▓▓▓▓▓▓       ▓▓
-█  ████████  ████  ██  ████  ██  ████  █
-█        ██  ████  ███      ███       ██
-]],
 		},
 		sections = {
 			{ section = "header" },
-			{ icon = " ", title = "Keymaps", section = "keys", indent = 2, padding = 1 },
+			{ section = "keys", gap = 1, padding = 1 },
 		},
 	},
 	explorer = {
