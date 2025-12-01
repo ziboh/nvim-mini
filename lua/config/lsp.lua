@@ -1,175 +1,193 @@
 vim.pack.add({
 	{ src = "https://github.com/mason-org/mason.nvim" },
-	{ src = "https://github.com/neovim/nvim-lspconfig" },
 })
+if not Utils.is_memory_less_than() then
+	vim.pack.add({
+		{ src = "https://github.com/mason-org/mason.nvim" },
+		{ src = "https://github.com/neovim/nvim-lspconfig" },
+		{ src = "https://github.com/mason-org/mason-lspconfig.nvim" },
+	})
 
-require("mason").setup()
-vim.api.nvim_create_autocmd("LspAttach", {
-	group = vim.api.nvim_create_augroup("SetupLSP", {}),
-	callback = function(event)
-		local client = assert(vim.lsp.get_client_by_id(event.data.client_id))
+	require("mason").setup()
+	require("mason-lspconfig").setup({
+		ensure_installed = { "lua_ls", "stylua" },
+		automatic_enable = {
+			exclude = { "stylua" },
+		},
+	})
 
-		-- [inlay hint]
-		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-			vim.keymap.set("n", "<leader>th", function()
-				vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
-			end, { buffer = event.buf, desc = "LSP: Toggle Inlay Hints" })
-		end
+	local keys = {
+		{
+			"<leader>ll",
+			function()
+				Snacks.picker.lsp_config()
+			end,
+			desc = "Lsp Info",
+		},
+		{
+			"gd",
+			vim.lsp.buf.definition,
+			desc = "Goto Definition",
+			has = "definition",
+		},
+		{
+			"gr",
+			vim.lsp.buf.references,
+			desc = "References",
+			nowait = true,
+		},
+		{ "gI", vim.lsp.buf.implementation, desc = "Goto Implementation" },
+		{ "gy", vim.lsp.buf.type_definition, desc = "Goto T[y]pe Definition" },
+		{ "gD", vim.lsp.buf.declaration, desc = "Goto Declaration" },
+		{
+			"<leader>h",
+			function()
+				return vim.lsp.buf.hover()
+			end,
+			desc = "Hover",
+		},
+		{
+			"K",
+			function()
+				return vim.lsp.buf.hover()
+			end,
+			desc = "Hover",
+		},
+		{
+			"<leader>lh",
+			function()
+				return vim.lsp.buf.signature_help()
+			end,
+			desc = "Signature Help",
+			has = "signatureHelp",
+		},
+		{
+			"<c-k>",
+			function()
+				return vim.lsp.buf.signature_help()
+			end,
+			mode = "i",
+			desc = "Signature Help",
+			has = "signatureHelp",
+		},
+		{
+			"<leader>la",
+			vim.lsp.buf.code_action,
+			desc = "Code Action",
+			mode = { "n", "v" },
+			has = "codeAction",
+		},
+		{
+			"<leader>lc",
+			vim.lsp.codelens.run,
+			desc = "Run Codelens",
+			mode = { "n", "v" },
+			has = "codeLens",
+		},
+		{
+			"<leader>lC",
+			vim.lsp.codelens.refresh,
+			desc = "Refresh & Display Codelens",
+			mode = { "n" },
+			has = "codeLens",
+		},
+		{
+			"<leader>lR",
+			function()
+				Snacks.rename.rename_file()
+			end,
+			desc = "Rename File",
+			mode = { "n" },
+			has = { "workspace/didRenameFiles", "workspace/willRenameFiles" },
+		},
+		{
+			"<leader>lr",
+			vim.lsp.buf.rename,
+			desc = "Rename",
+			has = "rename",
+		},
+		{
+			"]]",
+			function()
+				Snacks.words.jump(vim.v.count1)
+			end,
+			has = "documentHighlight",
+			desc = "Next Reference",
+			cond = function()
+				return Snacks.words.is_enabled()
+			end,
+		},
+		{
+			"[[",
+			function()
+				Snacks.words.jump(-vim.v.count1)
+			end,
+			has = "documentHighlight",
+			desc = "Prev Reference",
+			cond = function()
+				return Snacks.words.is_enabled()
+			end,
+		},
+	}
 
-		-- [folding]
-		if client and client:supports_method("textDocument/foldingRange") then
-			local win = vim.api.nvim_get_current_win()
-			vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
-		end
-
-		-- [keymaps]
-		vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format)
-		vim.keymap.set("n", "<leader>ld", function()
-			vim.diagnostic.open_float()
-		end, { desc = "Hover diagnostics" })
-		vim.keymap.set("n", "gd", function()
-			local params = vim.lsp.util.make_position_params(0, "utf-8")
-			vim.lsp.buf_request(0, "textDocument/definition", params, function(_, result, _, _)
-				if not result or vim.tbl_isempty(result) then
-					vim.notify("No definition found", vim.log.levels.INFO)
-				else
-					require("snacks").picker.lsp_definitions()
-				end
-			end)
-		end, { buffer = event.buf, desc = "LSP: Goto Definition" })
-		vim.keymap.set("n", "gD", function()
-			local win = vim.api.nvim_get_current_win()
-			local width = vim.api.nvim_win_get_width(win)
-			local height = vim.api.nvim_win_get_height(win)
-
-			-- Mimic tmux formula: 8 * width - 20 * height
-			local value = 8 * width - 20 * height
-			if value < 0 then
-				vim.cmd("split") -- vertical space is more: horizontal split
-			else
-				vim.cmd("vsplit") -- horizontal space is more: vertical split
-			end
-
-			vim.lsp.buf.definition()
-		end, { buffer = event.buf, desc = "LSP: Goto Definition (split)" })
-
-		local function jump_to_current_function_start()
-			local params = { textDocument = vim.lsp.util.make_text_document_params() }
-			local responses = vim.lsp.buf_request_sync(0, "textDocument/documentSymbol", params, 1000)
-			if not responses then
+	-- 创建 LspAttach 自动命令处理 Keymap
+	vim.api.nvim_create_autocmd("LspAttach", {
+		group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+		callback = function(args)
+			local client = vim.lsp.get_client_by_id(args.data.client_id)
+			if not client then
 				return
 			end
 
-			local pos = vim.api.nvim_win_get_cursor(0)
-			local line = pos[1] - 1
-
-			local function find_symbol(symbols)
-				for _, s in ipairs(symbols) do
-					local range = s.range or (s.location and s.location.range)
-					if range and line >= range.start.line and line <= range["end"].line then
-						if s.children then
-							local child = find_symbol(s.children)
-							if child then
-								return child
-							end
-						end
-						return s
+			-- 遍历所有 keymap 配置
+			for _, keymap in ipairs(keys) do
+				-- 检查 has 字段
+				local has_method = true
+				if keymap.has then
+					if type(keymap.has) == "string" then
+						has_method = client:supports_method("textDocument/" .. keymap.has)
+					elseif type(keymap.has) == "table" then
+						has_method = vim.iter(keymap.has):any(function(method)
+							return client:supports_method(method)
+						end)
 					end
 				end
-			end
 
-			for _, resp in pairs(responses) do
-				local sym = find_symbol(resp.result or {})
-				if sym and sym.range then
-					vim.api.nvim_win_set_cursor(0, { sym.range.start.line + 1, 0 })
-					return
+				-- 检查 cond 字段
+				local cond_ok = true
+				if keymap.cond then
+					cond_ok = keymap.cond()
+				end
+
+				-- 如果满足条件，则设置 keymap
+				if has_method and cond_ok then
+					local opts = {
+						buffer = args.buf,
+						desc = keymap.desc,
+						nowait = keymap.nowait,
+					}
+					vim.keymap.set(keymap.mode or "n", keymap[1], keymap[2], opts)
 				end
 			end
-		end
-		vim.keymap.set("n", "[f", jump_to_current_function_start, { desc = "Jump to start of current function" })
-		local function jump_to_current_function_end()
-			local params = { textDocument = vim.lsp.util.make_text_document_params() }
-			local responses = vim.lsp.buf_request_sync(0, "textDocument/documentSymbol", params, 1000)
-			if not responses then
-				return
-			end
+		end,
+	})
 
-			local pos = vim.api.nvim_win_get_cursor(0)
-			local line = pos[1] - 1
-
-			local function find_symbol(symbols)
-				for _, s in ipairs(symbols) do
-					local range = s.range or (s.location and s.location.range)
-					if range and line >= range.start.line and line <= range["end"].line then
-						if s.children then
-							local child = find_symbol(s.children)
-							if child then
-								return child
-							end
-						end
-						return s
-					end
-				end
-			end
-
-			for _, resp in pairs(responses) do
-				local sym = find_symbol(resp.result or {})
-				if sym and sym.range then
-					-- jump to end of the symbol
-					vim.api.nvim_win_set_cursor(0, { sym.range["end"].line + 1, 0 })
-					return
-				end
-			end
-		end
-		vim.keymap.set("n", "]f", jump_to_current_function_end, { desc = "Jump to end of current function" })
-	end,
-})
-
--- 只检测用户手动配置的 LSP 配置
-local function auto_enable_user_lsp_configs()
-	-- 指定你的配置目录路径
-	local config_path = vim.fn.stdpath("config")
-	local lsp_dir = config_path .. "/lsp"
-	local after_lsp_dir = config_path .. "/after/lsp"
-
-	-- 收集所有找到的配置名
-	local found_configs = {}
-
-	-- 检查 lsp/ 目录下的文件
-	if vim.fn.isdirectory(lsp_dir) == 1 then
-		local files = vim.fn.glob(lsp_dir .. "/*.lua", false, true)
-		for _, file in ipairs(files) do
-			local config_name = vim.fn.fnamemodify(file, ":t:r")
-			found_configs[config_name] = true
-		end
-	end
-
-	-- 检查 after/lsp/ 目录下的文件
-	if vim.fn.isdirectory(after_lsp_dir) == 1 then
-		local files = vim.fn.glob(after_lsp_dir .. "/*.lua", false, true)
-		for _, file in ipairs(files) do
-			local config_name = vim.fn.fnamemodify(file, ":t:r")
-			found_configs[config_name] = true
-		end
-	end
-
-	-- 启用所有找到的配置（只启用未启用的）
-	for config_name in pairs(found_configs) do
-		if not vim.lsp.is_enabled(config_name) then
-			vim.lsp.enable(config_name)
-			Snacks.notify("Enabled user LSP config: " .. config_name)
-		end
-	end
+	vim.diagnostic.config({
+		virtual_text = {
+			spacing = 4,
+			source = "if_many",
+			-- prefix = "●",
+			-- this will set set the prefix to a function that returns the diagnostics icon based on the severity
+			prefix = "icons",
+		},
+		signs = {
+			text = {
+				[vim.diagnostic.severity.ERROR] = Utils.icons.diagnostics.Error,
+				[vim.diagnostic.severity.HINT] = Utils.icons.diagnostics.Hint,
+				[vim.diagnostic.severity.WARN] = Utils.icons.diagnostics.Warn,
+				[vim.diagnostic.severity.INFO] = Utils.icons.diagnostics.Info,
+			},
+		},
+	})
 end
-
-vim.api.nvim_create_autocmd('BufEnter', {  
-  callback = function()  
-    -- 确保 snacks 插件已加载  
-    if package.loaded['snacks'] then  
-      auto_enable_user_lsp_configs()  
-    end  
-  end,  
-  desc = 'Auto-enable LSP configs after snacks loads'  
-})
-
--- vim.cmd([[set completeopt+=menuone,noselect,popup]])
+vim.keymap.set("n", "<leader>pm", "<cmd>Mason<cr>", { remap = true, desc = "Mason" })

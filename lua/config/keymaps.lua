@@ -13,7 +13,6 @@ vim.keymap.set("n", "H", "^", { noremap = true, silent = true, desc = "Move to f
 vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { noremap = true, silent = true, desc = "Increase window height" })
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { noremap = true, silent = true, desc = "Decrease window height" })
 vim.keymap.set("n", "M", "J", { noremap = true, silent = true, desc = "Join the current line with the next line" })
-
 vim.keymap.set("n", "<leader>/", "gcc", { remap = true, silent = true, desc = "Toggle Comment linewise" })
 vim.keymap.set("v", "<leader>/", "gc", { remap = true, desc = "Toggle Comment lineise" })
 
@@ -45,23 +44,37 @@ vim.keymap.set("o", "H", "^", { noremap = true, silent = true, desc = "Move to f
 vim.keymap.set("o", "L", "$", { noremap = true, silent = true, desc = "Move to end of line" })
 
 -- quit
-vim.keymap.set("n", "<leader>q", "<cmd>q<cr>", { noremap = true, silent = true , desc = "Quit" })
-vim.keymap.set("n", "<leader>Q", "<cmd>qa<cr>", { noremap = true, silent = true , desc = "Quit All" })
-vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { noremap = true, silent = true, desc = "Save File" })
-
+vim.keymap.set("n", "<leader>q", "<cmd>q<cr>", { noremap = true, silent = true, desc = "Quit" })
+vim.keymap.set("n", "<leader>Q", "<cmd>qa<cr>", { noremap = true, silent = true, desc = "Quit All" })
+vim.keymap.set(
+	{ "i", "x", "n", "s" },
+	"<C-s>",
+	"<cmd>w<cr><esc>",
+	{ noremap = true, silent = true, desc = "Save File" }
+)
 
 -- smart-splits.nivm
 if not Utils.has("smart-splits.nvim") then
-  -- 使用 <C-h/j/k/l> 在窗口之间移动
-  vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left split", noremap = true, silent = true })
-  vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to below split", noremap = true, silent = true })
-  vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to above split", noremap = true, silent = true })
-  vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right split", noremap = true, silent = true })
-  -- 使用 <C-方向键> 调整窗口大小
-  vim.keymap.set("n", "<C-Up>", "<cmd>resize -2<CR>", { desc = "Resize split up", noremap = true, silent = true })
-  vim.keymap.set("n", "<C-Down>", "<cmd>resize +2<CR>", { desc = "Resize split down", noremap = true, silent = true })
-  vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<CR>", { desc = "Resize split left", noremap = true, silent = true })
-  vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Resize split right", noremap = true, silent = true })
+	-- 使用 <C-h/j/k/l> 在窗口之间移动
+	vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left split", noremap = true, silent = true })
+	vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to below split", noremap = true, silent = true })
+	vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to above split", noremap = true, silent = true })
+	vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right split", noremap = true, silent = true })
+	-- 使用 <C-方向键> 调整窗口大小
+	vim.keymap.set("n", "<C-Up>", "<cmd>resize -2<CR>", { desc = "Resize split up", noremap = true, silent = true })
+	vim.keymap.set("n", "<C-Down>", "<cmd>resize +2<CR>", { desc = "Resize split down", noremap = true, silent = true })
+	vim.keymap.set(
+		"n",
+		"<C-Left>",
+		"<cmd>vertical resize -2<CR>",
+		{ desc = "Resize split left", noremap = true, silent = true }
+	)
+	vim.keymap.set(
+		"n",
+		"<C-Right>",
+		"<cmd>vertical resize +2<CR>",
+		{ desc = "Resize split right", noremap = true, silent = true }
+	)
 end
 
 vim.keymap.set("n", "<leader>ww", "<c-w>w", { noremap = true, silent = true, desc = "other window" })
@@ -73,3 +86,7 @@ vim.keymap.set("n", "<leader>wx", "<c-w>x", { noremap = true, silent = true, des
 vim.keymap.set("n", "<leader>wf", "<c-w>p", { noremap = true, silent = true, desc = "switch window" })
 vim.keymap.set("n", "|", "<cmd>vsplit<cr>", { noremap = true, silent = true, desc = "Vertical Split" })
 vim.keymap.set("n", "<C-|>", "<cmd>split<cr>", { noremap = true, silent = true, desc = "Horizontal Split" })
+
+vim.keymap.set("n", "<leader>ld", function()
+	vim.diagnostic.open_float()
+end, { noremap = true, silent = true, desc = "Hover diagnostics" })
