@@ -12,6 +12,58 @@ require("snacks").setup({
 		matcher = { frecency = true, cwd_bonus = true, history_bonus = true },
 		formatters = { icon_width = 3 },
 		actions = {
+			edit_popup = function(picker, item)
+				picker:close()
+				Snacks.win({
+					file = item._path,
+					width = 100,
+					height = 30,
+					bo = {
+						buftype = "",
+						buflisted = false,
+						bufhidden = "hide",
+						swapfile = false,
+						modifiable = true,
+					},
+					minimal = false,
+					noautocmd = false,
+					zindex = 20,
+					wo = {
+						winhighlight = "NormalFloat:Normal",
+					},
+					border = "rounded",
+					title_pos = "center",
+					footer_pos = "center",
+				})
+				-- HACK: this should fix folds
+				if vim.wo.foldmethod == "expr" then
+					vim.schedule(function()
+						vim.opt.foldmethod = "expr"
+					end)
+				end
+			end,
+			edit_vsplit = function(picker, item)
+				picker:close()
+				Snacks.win({
+					file = item._path,
+					position = "right",
+					width = 0.5,
+					minimal = false,
+					wo = {
+						winhighlight = "NormalFloat:Normal",
+					},
+					bo = {
+						modifiable = true,
+					},
+				})
+
+				-- HACK: this should fix folds
+				if vim.wo.foldmethod == "expr" then
+					vim.schedule(function()
+						vim.opt.foldmethod = "expr"
+					end)
+				end
+			end,
 			---@param picker snacks.Picker
 			clear_input = function(picker)
 				vim.api.nvim_buf_set_lines(picker.input.win.buf, 0, -1, false, {})
@@ -63,6 +115,7 @@ require("snacks").setup({
 					["<S-Tab>"] = { "list_up", mode = { "i", "n" } },
 					["<Tab>"] = { "list_down", mode = { "i", "n" } },
 					["<c-l>"] = { "clear_input", mode = { "n", "i" } },
+					["<c-f>"] = { "edit_popup", mode = { "n", "i" } },
 				},
 			},
 		},
