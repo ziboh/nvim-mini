@@ -1,3 +1,4 @@
+require("plugins.heirline")
 vim.pack.add({
 	{ src = "https://github.com/akinsho/bufferline.nvim" },
 })
@@ -46,5 +47,4 @@ local keys = {
 	{ "<C-A-1>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
 	{ "<C-]>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
 }
-
 Utils.setup_keymaps(keys)

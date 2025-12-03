@@ -3,8 +3,8 @@ vim.pack.add({
 })
 
 require("catppuccin").setup({
-	flavour = "macchiato", -- latte, frappe, macchiato, mocha ,auto
-	transparent_background = true,
+	flavour = "mocha", -- latte, frappe, macchiato, mocha ,auto
+	transparent_background = vim.g.transparent_enabled,
 	term_colors = true,
 	highlight_overrides = {
 		mocha = function(mocha)

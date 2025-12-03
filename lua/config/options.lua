@@ -39,7 +39,7 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 -- 外观设置
-vim.g.transparent_enabled = false -- 是否启用透明背景
+vim.g.transparent_enabled = true -- 是否启用透明背景
 
 -- Rust Analyzer 设置
 vim.g.rust_analyzer_mason = true -- 是否使用 Mason 安装 rust-analyzer
