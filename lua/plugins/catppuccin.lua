@@ -23,4 +23,6 @@ vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
 vim.api.nvim_set_hl(0, "FloatBorder", { bg = "NONE" })
 vim.api.nvim_set_hl(0, "FloatTitle", { bg = "NONE" })
 vim.api.nvim_set_hl(0, "SnacksPickerBorder", { bg = "NONE" })
+vim.api.nvim_set_hl(0, "SnacksTitle", { fg = "#65BCFF" })
+
 vim.api.nvim_set_hl(0, "YankyYanked", { fg = "#161b22", bg = "#ff8f62" })

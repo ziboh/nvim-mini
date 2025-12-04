@@ -14,6 +14,9 @@ local opts = {
 
 require("render-markdown").setup(opts)
 
+vim.api.nvim_set_hl(0, "RenderMarkdownCode", { bg = "#1e2124" })
+vim.api.nvim_set_hl(0, "RenderMarkdownCodeInline", { bg = "#1e2124" })
+
 Snacks.toggle({
 	name = "Render Markdown",
 	get = function()
