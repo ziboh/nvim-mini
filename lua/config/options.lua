@@ -112,9 +112,9 @@ opt.clipboard = "unnamedplus" -- 使用系统剪贴板
 opt.mouse = "a" -- 允许在 Neovim 中使用鼠标
 
 -- 折叠设置
-opt.foldlevel = 99 -- 折叠级别设置
-opt.foldmethod = "expr" -- 折叠方法使用表达式
-opt.foldtext = "" -- 不显示折叠文本
+-- opt.foldlevel = 99 -- 折叠级别设置
+-- opt.foldmethod = "expr" -- 折叠方法使用表达式
+-- opt.foldtext = "" -- 不显示折叠文本
 
 -- 窗口标题设置
 opt.title = true -- 启用窗口标题

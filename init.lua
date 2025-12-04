@@ -2,6 +2,7 @@ require("utils")
 require("config.options")
 require("config.keymaps")
 require("config.autocmd")
+require("config.folding")
 require("config.lsp")
 
 require("plugins.catppuccin")

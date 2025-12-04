@@ -173,6 +173,13 @@ require("snacks").setup({
 	input = {
 		enabled = true,
 	},
+	statuscolumn = {
+		enabled = true,
+		folds = {
+			open = true, -- show open fold icons
+			git_hl = true, -- use Git Signs hl for fold icons
+		},
+	},
 	terminal = {
 		win = {
 			keys = {
