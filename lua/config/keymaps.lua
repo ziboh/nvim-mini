@@ -91,4 +91,15 @@ vim.keymap.set("n", "<leader>ld", function()
 	vim.diagnostic.open_float()
 end, { noremap = true, silent = true, desc = "Hover diagnostics" })
 
+-- 关闭缓冲区
 vim.keymap.set("n", "<leader>c", function() Snacks.bufdelete() end, { noremap = true, silent = true, desc = "Close buffer" })
+
+-- tabs
+vim.keymap.set("n", "<leader><tab>l", "<cmd>tablast<cr>", { noremap = true, silent = true, desc = "Last Tab" })
+vim.keymap.set("n", "<leader><tab>o", "<cmd>tabonly<cr>", { noremap = true, silent = true, desc = "Close Other Tabs" })
+vim.keymap.set("n", "<leader><tab>f", "<cmd>tabfirst<cr>", { noremap = true, silent = true, desc = "First Tab" })
+vim.keymap.set("n", "<leader><tab>n", "<cmd>tabnew<cr>", { noremap = true, silent = true, desc = "New Tab" })
+vim.keymap.set("n", "<leader><tab><tab>", "<cmd>tabnext<cr>", { noremap = true, silent = true, desc = "Next Tab" })
+vim.keymap.set("n", "<leader><tab>]", "<cmd>tabnext<cr>", { noremap = true, silent = true, desc = "Next Tab" })
+vim.keymap.set("n", "<leader><tab>d", "<cmd>tabclose<cr>", { noremap = true, silent = true, desc = "Close Tab" })
+vim.keymap.set("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { noremap = true, silent = true, desc = "Previous Tab" })

@@ -1,4 +1,7 @@
 require("plugins.heirline")
+if not Utils.is_memory_less_than() then
+	require("plugins.noice")
+end
 vim.pack.add({
 	{ src = "https://github.com/akinsho/bufferline.nvim" },
 })

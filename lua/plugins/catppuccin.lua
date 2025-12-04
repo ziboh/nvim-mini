@@ -17,7 +17,7 @@ require("catppuccin").setup({
 	},
 })
 vim.cmd("colorscheme catppuccin")
-vim.api.nvim_set_hl(0, "statusline", { bg = "NONE" })
+-- vim.api.nvim_set_hl(0, "statusline", { bg = "NONE" })
 vim.api.nvim_set_hl(0, "Comment", { bg = "NONE" })
 vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
 vim.api.nvim_set_hl(0, "FloatBorder", { bg = "NONE" })

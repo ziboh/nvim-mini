@@ -1,7 +1,11 @@
 vim.pack.add({
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
+	{ src = "https://github.com/esmuellert/vscode-diff.nvim" },
+	{ src = "https://github.com/MunifTanjim/nui.nvim" },
 })
-local opts = {
+
+require("vscode-diff").setup()
+require("gitsigns").setup({
 	_on_attach_pre = function(_, callback)
 		if Utils.is_win() or vim.fn.executable("yadm") == 0 then
 			callback()
@@ -60,6 +64,4 @@ local opts = {
       map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff This ~")
       map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
 	end,
-}
-
-require("gitsigns").setup(opts)
+})

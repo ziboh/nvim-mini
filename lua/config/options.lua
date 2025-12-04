@@ -55,7 +55,7 @@ vim.g.suda_noninteractive = 1
 local opt = vim.opt
 
 -- 命令行设置
-opt.cmdheight = 0 -- 命令行高度设置为 0，使用 popup 窗口显示命令行
+-- opt.cmdheight = 0 -- 命令行高度设置为 0，使用 popup 窗口显示命令行
 
 -- 文件操作设置
 opt.autowrite = true -- 自动写入文件
