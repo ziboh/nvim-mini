@@ -38,6 +38,41 @@ M.Ruler = {
 	-- %P = percentage through file of displayed window
 	provider = "%4l,%-3c %P",
 }
+M.SuperMaven = {
+	on_click = {
+		name = "heirline_supermaven",
+		callback = function()
+			Snacks.toggle.get("supermaven"):toggle()
+		end,
+	},
+	static = {
+		icon = " ",
+		text = "SuperMaven",
+		enabled_hl = { fg = "#98bb6c", bold = true },
+		disabled_hl = { fg = "#ed8796", bold = true },
+	},
+	init = function(self)
+		if vim.g.supermaven_enabled then
+			self.hl = self.enabled_hl
+		else
+			self.hl = self.disabled_hl
+		end
+	end,
+	flexible = 10,
+	{
+		provider = function(self)
+			return self.icon .. self.text
+		end,
+	},
+	{
+		provider = function(self)
+			return self.icon
+		end,
+	},
+	hl = function(self)
+		return self.hl
+	end,
+}
 M.ScrollBar = {
 	static = {
 		sbar = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" },

@@ -1,5 +1,6 @@
 vim.pack.add({
 	{ src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.x") },
+	"https://github.com/saghen/blink.compat",
 })
 
 local opts = {
@@ -60,7 +61,7 @@ local opts = {
 		enabled = false,
 	},
 	sources = {
-		compat = {},
+		compat = { "supermaven" },
 		default = { "lsp", "path", "snippets", "buffer" },
 		providers = {
 			lsp = {
@@ -82,6 +83,14 @@ local opts = {
 
 					return items
 				end,
+			},
+			supermaven = {
+				enabled = function()
+					return vim.g.supermaven_enabled and not vim.g.rime_enabled
+				end,
+				kind = "Supermaven",
+				score_offset = 100,
+				async = true,
 			},
 		},
 	},

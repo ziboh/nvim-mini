@@ -4,6 +4,6 @@ vim.api.nvim_create_autocmd('FileType', {
   group = augroup,
   pattern = patterns,
   callback = function()
-    vim.bo.expandtab = false
+   vim.bo.expandtab = false
   end,
 })

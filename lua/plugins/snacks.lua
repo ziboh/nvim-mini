@@ -127,6 +127,17 @@ local opts = {
 				},
 			},
 		},
+		sources = {
+			explorer = {
+				win = {
+					list = {
+						keys = {
+							["<leader>"] = "confirm",
+						},
+					},
+				},
+			},
+		},
 	},
 	dashboard = {
 		preset = {
