@@ -2,8 +2,33 @@ vim.pack.add({
 	{ src = "https://github.com/mason-org/mason.nvim" },
 })
 
-require("mason").setup()
-local automatic_enable = { "nushell", "lua_ls" }
+local mason_opts = {
+	github = {
+		download_url_template = "https://ghfast.top/https://github.com/%s/releases/download/%s/%s",
+	},
+	ensure_installed = {
+		"stylua",
+		"shfmt",
+	},
+}
+require("mason").setup(mason_opts)
+
+local mr = require("mason-registry")
+mr:on("package:install:success", function()
+	vim.defer_fn(function()
+		-- trigger FileType event to possibly load this newly installed LSP server
+		vim.api.nvim_exec_autocmds("FileType", { buffer = vim.api.nvim_get_current_buf() })
+	end, 100)
+end)
+
+mr.refresh(function()
+	for _, tool in ipairs(mason_opts.ensure_installed) do
+		local p = mr.get_package(tool)
+		if not p:is_installed() then
+			p:install()
+		end
+	end
+end)
 local diagnostics = {
 	virtual_text = {
 		spacing = 4,
@@ -42,128 +67,235 @@ if not Utils.is_memory_less_than() then
 		{ src = "https://github.com/mason-org/mason-lspconfig.nvim" },
 	})
 
+	local opts = {
+		servers = {
+			-- configuration for all lsp servers
+			["*"] = {
+				capabilities = {
+					textDocument = {
+						completion = {
+							completionItem = {
+								commitCharactersSupport = true,
+							},
+						},
+					},
+				},
+				keys = {
+					{
+						"gd",
+						vim.lsp.buf.definition,
+						desc = "Goto Definition",
+						has = "definition",
+					},
+					{
+						"gr",
+						vim.lsp.buf.references,
+						desc = "References",
+						nowait = true,
+					},
+					{ "gI", vim.lsp.buf.implementation, desc = "Goto Implementation" },
+					{ "gy", vim.lsp.buf.type_definition, desc = "Goto T[y]pe Definition" },
+					{ "gD", vim.lsp.buf.declaration, desc = "Goto Declaration" },
+					{
+						"<leader>h",
+						function()
+							return vim.lsp.buf.hover()
+						end,
+						desc = "Hover",
+					},
+					{
+						"K",
+						function()
+							return vim.lsp.buf.hover()
+						end,
+						desc = "Hover",
+					},
+					{
+						"<leader>lh",
+						function()
+							return vim.lsp.buf.signature_help()
+						end,
+						desc = "Signature Help",
+						has = "signatureHelp",
+					},
+					{
+						"<c-k>",
+						function()
+							return vim.lsp.buf.signature_help()
+						end,
+						mode = "i",
+						desc = "Signature Help",
+						has = "signatureHelp",
+					},
+					{
+						"<leader>la",
+						vim.lsp.buf.code_action,
+						desc = "Code Action",
+						mode = { "n", "v" },
+						has = "codeAction",
+					},
+					{
+						"<leader>lc",
+						vim.lsp.codelens.run,
+						desc = "Run Codelens",
+						mode = { "n", "v" },
+						has = "codeLens",
+					},
+					{
+						"<leader>lC",
+						vim.lsp.codelens.refresh,
+						desc = "Refresh & Display Codelens",
+						mode = { "n" },
+						has = "codeLens",
+					},
+					{
+						"<leader>lR",
+						function()
+							Snacks.rename.rename_file()
+						end,
+						desc = "Rename File",
+						mode = { "n" },
+						has = { "workspace/didRenameFiles", "workspace/willRenameFiles" },
+					},
+					{
+						"<leader>lr",
+						vim.lsp.buf.rename,
+						desc = "Rename",
+						has = "rename",
+					},
+					{
+						"]]",
+						function()
+							Snacks.words.jump(vim.v.count1)
+						end,
+						has = "documentHighlight",
+						desc = "Next Reference",
+						cond = function()
+							return Snacks.words.is_enabled()
+						end,
+					},
+					{
+						"[[",
+						function()
+							Snacks.words.jump(-vim.v.count1)
+						end,
+						has = "documentHighlight",
+						desc = "Prev Reference",
+						cond = function()
+							return Snacks.words.is_enabled()
+						end,
+					},
+				},
+			},
+			lua_ls = {
+				cmd = { "lua-language-server", "--locale=zh-cn" },
+				settings = {
+					Lua = {
+						diagnostics = {
+							disable = {
+								"trailing-space",
+							},
+						},
+						workspace = {
+							checkThirdParty = false,
+						},
+						codeLens = {
+							enable = true,
+						},
+						completion = {
+							callSnippet = "Replace",
+						},
+						doc = {
+							privateName = { "^_" },
+						},
+						hint = {
+							enable = true,
+							setType = false,
+							paramType = true,
+							paramName = "Disable",
+							semicolon = "Disable",
+							arrayIndex = "Disable",
+						},
+					},
+				},
+				keys = {
+					{
+						"<leader>tt",
+						function()
+							Snacks.notify("lua_ls 测试")
+						end,
+						desc = "Code Action",
+						mode = { "n", "v" },
+					},
+				},
+			},
+			bashls = {
+				mason = true,
+				filetypes = { "sh", "bash" },
+			},
+			nushell = {},
+			eslint = {
+				settings = {
+					-- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
+					workingDirectories = { mode = "auto" },
+				},
+			},
+			stylua = {
+				enabled = false,
+			},
+		},
+		setup = {},
+	}
 	vim.keymap.set("n", "<leader>ll", function()
 		Snacks.picker.lsp_config()
 	end, { desc = "Lsp Info", silent = true, noremap = true })
-	require("mason-lspconfig").setup({
-		ensure_installed = { "lua_ls", "stylua" },
-		automatic_enable = {
-			exclude = { "stylua" },
-		},
-	})
-	local keys = {
-		{
-			"<leader>ll",
-			function()
-				Snacks.picker.lsp_config()
-			end,
-			desc = "Lsp Info",
-		},
-		{
-			"gd",
-			vim.lsp.buf.definition,
-			desc = "Goto Definition",
-			has = "definition",
-		},
-		{
-			"gr",
-			vim.lsp.buf.references,
-			desc = "References",
-			nowait = true,
-		},
-		{ "gI", vim.lsp.buf.implementation, desc = "Goto Implementation" },
-		{ "gy", vim.lsp.buf.type_definition, desc = "Goto T[y]pe Definition" },
-		{ "gD", vim.lsp.buf.declaration, desc = "Goto Declaration" },
-		{
-			"<leader>h",
-			function()
-				return vim.lsp.buf.hover()
-			end,
-			desc = "Hover",
-		},
-		{
-			"K",
-			function()
-				return vim.lsp.buf.hover()
-			end,
-			desc = "Hover",
-		},
-		{
-			"<leader>lh",
-			function()
-				return vim.lsp.buf.signature_help()
-			end,
-			desc = "Signature Help",
-			has = "signatureHelp",
-		},
-		{
-			"<c-k>",
-			function()
-				return vim.lsp.buf.signature_help()
-			end,
-			mode = "i",
-			desc = "Signature Help",
-			has = "signatureHelp",
-		},
-		{
-			"<leader>la",
-			vim.lsp.buf.code_action,
-			desc = "Code Action",
-			mode = { "n", "v" },
-			has = "codeAction",
-		},
-		{
-			"<leader>lc",
-			vim.lsp.codelens.run,
-			desc = "Run Codelens",
-			mode = { "n", "v" },
-			has = "codeLens",
-		},
-		{
-			"<leader>lC",
-			vim.lsp.codelens.refresh,
-			desc = "Refresh & Display Codelens",
-			mode = { "n" },
-			has = "codeLens",
-		},
-		{
-			"<leader>lR",
-			function()
-				Snacks.rename.rename_file()
-			end,
-			desc = "Rename File",
-			mode = { "n" },
-			has = { "workspace/didRenameFiles", "workspace/willRenameFiles" },
-		},
-		{
-			"<leader>lr",
-			vim.lsp.buf.rename,
-			desc = "Rename",
-			has = "rename",
-		},
-		{
-			"]]",
-			function()
-				Snacks.words.jump(vim.v.count1)
-			end,
-			has = "documentHighlight",
-			desc = "Next Reference",
-			cond = function()
-				return Snacks.words.is_enabled()
-			end,
-		},
-		{
-			"[[",
-			function()
-				Snacks.words.jump(-vim.v.count1)
-			end,
-			has = "documentHighlight",
-			desc = "Prev Reference",
-			cond = function()
-				return Snacks.words.is_enabled()
-			end,
-		},
-	}
+
+	if opts.servers["*"] then
+		vim.lsp.config("*", opts.servers["*"])
+	end
+
+	-- get all the servers that are available through mason-lspconfig
+	local have_mason = Utils.has("mason-lspconfig.nvim")
+	local mason_all = have_mason
+			and vim.tbl_keys(require("mason-lspconfig.mappings").get_mason_map().lspconfig_to_package)
+		or {} --[[ @as string[] ]]
+	local mason_exclude = {} ---@type string[]
+
+	---@return boolean? exclude automatic setup
+	local function configure(server)
+		if server == "*" then
+			return false
+		end
+		local sopts = opts.servers[server]
+		sopts = sopts == true and {} or (not sopts) and { enabled = false } or sopts
+
+		---@diagnostic disable-next-line: undefined-field
+		if sopts.enabled == false then
+			mason_exclude[#mason_exclude + 1] = server
+			return
+		end
+
+		---@diagnostic disable-next-line: undefined-field
+		local use_mason = sopts.mason ~= false and vim.tbl_contains(mason_all, server)
+		local setup = opts.setup[server] or opts.setup["*"]
+		if setup and setup(server, sopts) then
+			mason_exclude[#mason_exclude + 1] = server
+		else
+			vim.lsp.config(server, sopts) -- configure the server
+			if not use_mason then
+				vim.lsp.enable(server)
+			end
+		end
+		return use_mason
+	end
+
+	local install = vim.tbl_filter(configure, vim.tbl_keys(opts.servers))
+	if have_mason then
+		require("mason-lspconfig").setup({
+			ensure_installed = install,
+			automatic_enable = { exclude = mason_exclude },
+		})
+	end
 
 	-- 创建 LspAttach 自动命令处理 Keymap
 	vim.api.nvim_create_autocmd("LspAttach", {
@@ -173,7 +305,12 @@ if not Utils.is_memory_less_than() then
 			if not client then
 				return
 			end
-
+			local keys = opts.servers["*"].keys
+			for server, server_opts in pairs(opts.servers) do
+				if type(server_opts) == "table" and server_opts.keys and client.name == server then
+					keys = vim.list_extend(keys, server_opts.keys)
+				end
+			end
 			-- 遍历所有 keymap 配置
 			for _, keymap in ipairs(keys) do
 				-- 检查 has 字段
@@ -196,17 +333,14 @@ if not Utils.is_memory_less_than() then
 
 				-- 如果满足条件，则设置 keymap
 				if has_method and cond_ok then
-					local opts = {
+					local sopts = {
 						buffer = args.buf,
 						desc = keymap.desc,
 						nowait = keymap.nowait,
 					}
-					vim.keymap.set(keymap.mode or "n", keymap[1], keymap[2], opts)
+					vim.keymap.set(keymap.mode or "n", keymap[1], keymap[2], sopts)
 				end
 			end
 		end,
 	})
-	for _, lsp in ipairs(automatic_enable) do
-		vim.lsp.enable(lsp)
-	end
 end

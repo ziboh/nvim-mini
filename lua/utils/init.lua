@@ -207,4 +207,62 @@ function M.detect_language(str)
   return chinese_count > english_count and "Chinese" or "English"
 end
 
+--- 将 Lua table 转换为字符串表示形式
+--- @param t table 要转换的 table
+--- @param indent? string 可选参数，用于控制缩进（默认为空字符串）
+--- @param visited? table 可选参数，用于记录已处理的 table，避免循环引用
+--- @return string 返回 table 的字符串表示形式
+function M.tableToString(t, indent, visited)
+  -- 初始化缩进和已访问表
+  indent = indent or ""
+  visited = visited or {}
+  -- 如果已经访问过这个表，直接返回
+  if visited[t] then
+    return indent .. "{...}"
+  end
+
+  -- 标记当前表为已访问
+  visited[t] = true
+
+  -- 开始构建字符串
+  local result = indent .. "{\n"
+  local newIndent = indent .. "  "
+
+  -- 遍历表中的每个键值对
+  for k, v in pairs(t) do
+    -- 处理键
+    local keyStr
+    if type(k) == "string" then
+      keyStr = '["' .. k .. '"]'
+    else
+      keyStr = "[" .. tostring(k) .. "]"
+    end
+
+    -- 处理值
+    local valueStr
+    if type(v) == "table" then
+      valueStr = M.tableToString(v, newIndent, visited)
+    elseif type(v) == "string" then
+      valueStr = '"' .. v .. '"'
+    else
+      valueStr = tostring(v)
+    end
+
+    -- 将键值对添加到结果中
+    result = result .. newIndent .. keyStr .. " = " .. valueStr .. ",\n"
+  end
+
+  -- 结束构建字符串
+  result = result .. indent .. "}"
+  return result
+end
+
+--- 将 Lua table 转换为字符串表示形式
+--- @param t table 要转换的 table
+--- @param indent? string 可选参数，用于控制缩进（默认为空字符串）
+--- @param visited? table 可选参数，用于记录已处理的 table，避免循环引用
+function M.PrintTable(t, indent, visited)
+  vim.notify(M.tableToString(t, indent, visited))
+end
+
 return M
