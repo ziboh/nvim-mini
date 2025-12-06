@@ -3,7 +3,7 @@ vim.o.cmdheight = 0
 
 return { -- statusline
   components.RightPadding(components.Mode, 1),
-  components.RightPadding(components.FileNameBlock, 1),
+  components.RightPadding(components.FileType, 1),
   components.RightPadding(components.Git, 1),
   components.RightPadding(components.Diagnostics, 1),
   -- components.RightPadding(components.Overseer, 1),
@@ -15,7 +15,7 @@ return { -- statusline
   -- components.RightPadding(components.LSPActive),
   components.RightPadding(components.Lsp, 1),
   components.RightPadding(components.SuperMaven, 1),
-  -- components.RightPadding(components.SimpleIndicator),
+  components.RightPadding(components.FileCode),
   -- components.RightPadding(components.FileType, 0),
   components.Ruler,
   components.ScrollBar,

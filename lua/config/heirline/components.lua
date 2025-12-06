@@ -38,6 +38,79 @@ M.Ruler = {
 	-- %P = percentage through file of displayed window
 	provider = "%4l,%-3c %P",
 }
+M.FileType = {
+	condition = function()
+		return vim.bo.filetype ~= ""
+	end,
+	init = function(self)
+		self.filetype = vim.bo.filetype
+		if self.filetype:match("(snacks_picker).*") == "snacks_picker" then
+			local explore_picker = Snacks.picker.get({ source = "explorer" })
+			local explore_exist = false
+			if #explore_picker ~= 0 then
+				explore_picker = explore_picker[1]
+				explore_exist = true
+			end
+			---@diagnostic disable-next-line: undefined-field
+			if explore_exist and explore_picker:is_focused() then
+				---@diagnostic disable-next-line: undefined-field
+				local dir = explore_picker:dir()
+				self.icon, self.icon_hl = Snacks.util.icon(dir, "directory")
+				self.filetype = dir
+			elseif self.filetype == "snacks_picker_input" then
+				self.icon = ""
+				self.icon_hl = "MiniIconsCyan"
+				self.filetype = "Input"
+			elseif self.filetype == "snacks_picker_list" then
+				self.icon = ""
+				self.icon_hl = "MiniIconsCyan"
+				self.filetype = "List"
+			elseif self.filetype == "snacks_picker_preview" then
+				self.icon = ""
+				self.icon_hl = "MiniIconsCyan"
+				self.filetype = "Preview"
+			end
+		elseif self.filetype == "snacks_terminal" then
+			self.icon = ""
+			self.icon_hl = "MiniIconsCyan"
+			self.filetype = "Terminal"
+		elseif self.filetype == "snacks_input" then
+			self.icon = ""
+			self.icon_hl = "MiniIconsCyan"
+			self.filetype = "Input"
+		else
+			self.icon, self.icon_hl = Snacks.util.icon(self.filetype, "filetype")
+		end
+	end,
+	{
+		provider = function(self)
+			return self.icon .. " "
+		end,
+		hl = function(self)
+			return self.icon_hl
+		end,
+	},
+	{
+		provider = function(self)
+			return self.filetype
+		end,
+	},
+}
+M.FileCode = {
+	condition = function()
+		return vim.bo.fenc ~= ""
+	end,
+	{
+		hl = { fg = "#50a4e9", bold = true },
+		provider = function()
+			local enc = vim.bo.fenc
+			if enc == "euc-cn" then
+				enc = "gbk"
+			end
+			return enc ~= "" and enc:upper() .. "[" .. vim.bo.ff:sub(1, 1):upper() .. vim.bo.ff:sub(2) .. "]"
+		end,
+	},
+}
 M.SuperMaven = {
 	on_click = {
 		name = "heirline_supermaven",
@@ -277,13 +350,6 @@ M.Lsp = {
 		end,
 	},
 	M.LspServer,
-}
-
-M.FileType = {
-	provider = function()
-		return vim.bo.filetype
-	end,
-	hl = { fg = utils.get_highlight("Type").fg, bold = true },
 }
 
 M.CodeiumStatus = {

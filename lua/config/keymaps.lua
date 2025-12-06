@@ -103,3 +103,9 @@ vim.keymap.set("n", "<leader><tab><tab>", "<cmd>tabnext<cr>", { noremap = true, 
 vim.keymap.set("n", "<leader><tab>]", "<cmd>tabnext<cr>", { noremap = true, silent = true, desc = "Next Tab" })
 vim.keymap.set("n", "<leader><tab>d", "<cmd>tabclose<cr>", { noremap = true, silent = true, desc = "Close Tab" })
 vim.keymap.set("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { noremap = true, silent = true, desc = "Previous Tab" })
+
+-- better up/down
+vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
+vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
+vim.keymap.set({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })

@@ -1,4 +1,13 @@
 require("plugins.rooter")
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "http",
+	callback = function()
+		require("plugins.kulala")
+	end,
+	once = true,
+})
+
 vim.pack.add({
 	{ src = "https://github.com/monaqa/dial.nvim" },
 	{ src = "https://github.com/mrjones2014/smart-splits.nvim" },
@@ -185,5 +194,5 @@ local keys = {
 	},
 }
 
-require('smart-splits').setup({})
+require("smart-splits").setup({})
 Utils.setup_keymaps(keys)

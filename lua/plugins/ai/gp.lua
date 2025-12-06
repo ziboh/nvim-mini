@@ -1,6 +1,9 @@
-vim.pack.add({
-	{ src = "https://github.com/ziboh/gp.nvim" },
-})
+-- vim.pack.add({
+-- 	-- { src = "https://github.com/ziboh/gp.nvim" },
+-- 	"D:/zibo/Documents/projects/gp.nvim",
+-- })
+vim.opt.rtp:append("D:/zibo/Documents/projects/gp.nvim")
+
 local trans_win
 local prompt = require("plugins.ai.prompt")
 local chat_system_prompt_cn = require("gp.defaults").chat_system_prompt
@@ -8,8 +11,9 @@ local chat_system_prompt_cn = require("gp.defaults").chat_system_prompt
 require("gp").setup({
 	chat_dir = vim.env.GP_DIR == nil and vim.fn.stdpath("data"):gsub("/$", "") .. "/gp/chats"
 		or vim.env.GP_DIR .. "/chats",
-	log_dir = vim.env.GP_DIR == nil and vim.fn.stdpath("data"):gsub("/$", "") .. "/gp/gp.nvim.log"
-		or vim.env.GP_DIR .. "/gp.nvim.log",
+	log_file = vim.fs.normalize(
+		vim.env.GP_DIR == nil and vim.fn.stdpath("data"):gsub("/$", "") .. "/gp/gp.log" or vim.env.GP_DIR .. "/gp.log"
+	),
 	state_dir = vim.env.GP_DIR == nil and vim.fn.stdpath("data"):gsub("/$", "") .. "/gp/persisted"
 		or vim.env.GP_DIR .. "/persisted",
 	chat_free_cursor = true,
@@ -24,6 +28,22 @@ require("gp").setup({
 	custom_state = { "translate", "gitcommit" },
 
 	agents = {
+		{
+			provider = "openai",
+			name = "ChatQwen3-480B",
+			chat = true,
+			command = false,
+			model = { model = "Qwen/Qwen3-Coder-480B-A35B-Instruct", temperature = 0.8, top_p = 1 },
+			system_prompt = require("gp.defaults").chat_system_prompt,
+		},
+		{
+			provider = "openai",
+			name = "CodeQwen3-480B",
+			chat = false,
+			command = true,
+			model = { model = "Qwen/Qwen3-Coder-480B-A35B-Instruct", temperature = 1, top_p = 1 },
+			system_prompt = require("gp.defaults").chat_system_prompt,
+		},
 		{
 			provider = "openai",
 			name = "ChatDeepseek",
@@ -299,14 +319,7 @@ require("gp").setup({
 			Snacks.picker("grep", {
 				cwd = gp.config.chat_dir,
 				args = { "--sort", "path", "--sortr", "path" },
-				layout = { preset = "max" },
 				title = "Find Gp Chat",
-				layouts = {
-					max = {
-						fullscreen = true,
-						preset = "default",
-					},
-				},
 				win = {
 					input = {
 						keys = {
@@ -510,7 +523,7 @@ require("gp").setup({
 								vim.api.nvim_win_close(0, false)
 							end, { buffer = buf, desc = "提交更改" })
 						end
-						vim.cmd("doautocmd User GpDone")
+						vim.api.nvim_exec_autocmds("User", { pattern = "GpDone" })
 					end),
 					nil
 				)
