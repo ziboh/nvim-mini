@@ -486,13 +486,9 @@ require("gp").setup({
 
 					-- 启动动画
 					start_spinner()
-					vim.api.nvim_buf_set_keymap(
-						buf,
-						"n",
-						"<cr>",
-						"<cmd>lua " .. [[Snacks.notify.warn("生成Commit中，请稍等",{ title = "Gp Commit"})<cr>]],
-						{ desc = "提交更改" }
-					)
+					vim.keymap.set("n", "<cr>", function()
+						Snacks.notify.warn("生成Commit中，请稍等", { title = "Gp Commit" })
+					end, { buffer = buf, desc = "提交更改" })
 				end
 
 				gp.dispatcher.query(
@@ -505,20 +501,14 @@ require("gp").setup({
 						if win == nil then
 							vim.api.nvim_command("w")
 						else
-							local git_commit_path = vim.fn.stdpath("data"):gsub("/$", "") .. "/gp/gpcommit.txt"
-							git_commit_path = git_commit_path:gsub("\\", "/")
+							local git_commit_path =
+								vim.fs.normalize(vim.fn.stdpath("data"):gsub("/$", "") .. "/gp/gpcommit.txt")
 							vim.fn.writefile(vim.api.nvim_buf_get_lines(buf, 0, -1, false), git_commit_path, "p")
-							local git_commit = [[vim.fn.system("git commit -F ]] .. git_commit_path .. [[")]]
-
-							vim.api.nvim_buf_set_keymap(
-								buf,
-								"n",
-								"<cr>",
-								"<cmd>lua "
-									.. git_commit
-									.. [[;vim.api.nvim_win_close(0, false);Snacks.notify("已提交更改",{ title = "Gp Commit"})<cr>]],
-								{ desc = "提交更改" }
-							)
+							vim.keymap.set("n", "<cr>", function()
+								vim.fn.system("git commit -F " .. git_commit_path)
+								Snacks.notify("已提交更改", { title = "Gp Commit" })
+								vim.api.nvim_win_close(0, false)
+							end, { buffer = buf, desc = "提交更改" })
 						end
 						vim.cmd("doautocmd User GpDone")
 					end),

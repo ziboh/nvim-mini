@@ -11,6 +11,16 @@ setmetatable(M, {
 	end,
 })
 
+---@param value any
+---@param list any[]
+function M.value_in_list(value, list)
+	for _, v in ipairs(list) do
+		if v == value then
+			return true
+		end
+	end
+end
+
 function M.is_remote()
 	if vim.env.SSH_TTY ~= nil then
 		return true
@@ -180,31 +190,31 @@ end
 
 -- Determine if the character is a Chinese character
 function M.detect_language(str)
-  local chinese_count = 0
-  local english_count = 0
+	local chinese_count = 0
+	local english_count = 0
 
-  local i = 1
-  while i <= #str do
-    local byte = string.byte(str, i)
-    if byte == nil then
-      break
-    end
+	local i = 1
+	while i <= #str do
+		local byte = string.byte(str, i)
+		if byte == nil then
+			break
+		end
 
-    if byte >= 0xE0 and byte <= 0xEF then
-      -- 中文字符（UTF-8 编码占3字节）
-      chinese_count = chinese_count + 1
-      i = i + 3
-    elseif byte >= 0x20 and byte <= 0x7E then
-      -- ASCII 可显示字符（英文、数字、符号等）
-      english_count = english_count + 1
-      i = i + 1
-    else
-      -- 其他字符
-      i = i + 1
-    end
-  end
+		if byte >= 0xE0 and byte <= 0xEF then
+			-- 中文字符（UTF-8 编码占3字节）
+			chinese_count = chinese_count + 1
+			i = i + 3
+		elseif byte >= 0x20 and byte <= 0x7E then
+			-- ASCII 可显示字符（英文、数字、符号等）
+			english_count = english_count + 1
+			i = i + 1
+		else
+			-- 其他字符
+			i = i + 1
+		end
+	end
 
-  return chinese_count > english_count and "Chinese" or "English"
+	return chinese_count > english_count and "Chinese" or "English"
 end
 
 --- 将 Lua table 转换为字符串表示形式
@@ -213,48 +223,48 @@ end
 --- @param visited? table 可选参数，用于记录已处理的 table，避免循环引用
 --- @return string 返回 table 的字符串表示形式
 function M.tableToString(t, indent, visited)
-  -- 初始化缩进和已访问表
-  indent = indent or ""
-  visited = visited or {}
-  -- 如果已经访问过这个表，直接返回
-  if visited[t] then
-    return indent .. "{...}"
-  end
+	-- 初始化缩进和已访问表
+	indent = indent or ""
+	visited = visited or {}
+	-- 如果已经访问过这个表，直接返回
+	if visited[t] then
+		return indent .. "{...}"
+	end
 
-  -- 标记当前表为已访问
-  visited[t] = true
+	-- 标记当前表为已访问
+	visited[t] = true
 
-  -- 开始构建字符串
-  local result = indent .. "{\n"
-  local newIndent = indent .. "  "
+	-- 开始构建字符串
+	local result = indent .. "{\n"
+	local newIndent = indent .. "  "
 
-  -- 遍历表中的每个键值对
-  for k, v in pairs(t) do
-    -- 处理键
-    local keyStr
-    if type(k) == "string" then
-      keyStr = '["' .. k .. '"]'
-    else
-      keyStr = "[" .. tostring(k) .. "]"
-    end
+	-- 遍历表中的每个键值对
+	for k, v in pairs(t) do
+		-- 处理键
+		local keyStr
+		if type(k) == "string" then
+			keyStr = '["' .. k .. '"]'
+		else
+			keyStr = "[" .. tostring(k) .. "]"
+		end
 
-    -- 处理值
-    local valueStr
-    if type(v) == "table" then
-      valueStr = M.tableToString(v, newIndent, visited)
-    elseif type(v) == "string" then
-      valueStr = '"' .. v .. '"'
-    else
-      valueStr = tostring(v)
-    end
+		-- 处理值
+		local valueStr
+		if type(v) == "table" then
+			valueStr = M.tableToString(v, newIndent, visited)
+		elseif type(v) == "string" then
+			valueStr = '"' .. v .. '"'
+		else
+			valueStr = tostring(v)
+		end
 
-    -- 将键值对添加到结果中
-    result = result .. newIndent .. keyStr .. " = " .. valueStr .. ",\n"
-  end
+		-- 将键值对添加到结果中
+		result = result .. newIndent .. keyStr .. " = " .. valueStr .. ",\n"
+	end
 
-  -- 结束构建字符串
-  result = result .. indent .. "}"
-  return result
+	-- 结束构建字符串
+	result = result .. indent .. "}"
+	return result
 end
 
 --- 将 Lua table 转换为字符串表示形式
@@ -262,7 +272,7 @@ end
 --- @param indent? string 可选参数，用于控制缩进（默认为空字符串）
 --- @param visited? table 可选参数，用于记录已处理的 table，避免循环引用
 function M.PrintTable(t, indent, visited)
-  vim.notify(M.tableToString(t, indent, visited))
+	vim.notify(M.tableToString(t, indent, visited))
 end
 
 return M

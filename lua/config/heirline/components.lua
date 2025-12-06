@@ -201,44 +201,82 @@ M.MacroRecording = {
 	update = { "RecordingEnter", "RecordingLeave" },
 } -- MacroRecording
 
-M.Formatters = {
-	condition = function(self)
-		local ok, conform = pcall(require, "conform")
-		self.conform = conform
-		return ok
-	end,
-	update = { "BufEnter" },
-	provider = function(self)
-		local ft_entry = self.conform.formatters_by_ft[vim.bo.filetype]
-		local ft_formatters
-		if type(ft_entry) == "function" then
-			ft_formatters = ft_entry()
-		else
-			ft_formatters = ft_entry
-		end
-		return ft_formatters and table.concat(ft_formatters, ",") or ""
-	end,
-	hl = { fg = dim_color, bold = false },
+M.LspServer = {
+	flexible = 1,
+	on_click = {
+		name = "heirline_lsp_info",
+		callback = function()
+			Snacks.picker.lsp_config()
+		end,
+	},
+	{
+		provider = function(self)
+			local names = self.lsp_filtered_table
+			if #names == 0 then
+				return ""
+			else
+				return " [" .. table.concat(names, ", ") .. "]"
+			end
+		end,
+	},
+	{
+		provider = function(self)
+			local names = self.lsp_filtered_table
+			if #names == 0 then
+				return ""
+			else
+				return " [LSP]"
+			end
+		end,
+	},
 }
-
-M.LSPActive = {
+M.Lsp = {
 	condition = conditions.lsp_attached,
-	update = { "LspAttach", "LspDetach" },
-	provider = function()
+	init = function(self)
 		local names = {}
-		---@diagnostic disable-next-line: deprecated
+		self.ignore_lsp = { "rime_ls", "copilot" }
+		local lsp_filtered_table = {}
+
 		for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
 			table.insert(names, server.name)
+			if
+				not Utils.value_in_list(server.name, self.ignore_lsp)
+				and not Utils.value_in_list(server.name, lsp_filtered_table)
+			then
+				table.insert(lsp_filtered_table, server.name)
+			end
 		end
-		return table.concat(names, ",")
+		if Utils.has("lint") then
+			for _, lint in pairs(require("lint")._resolve_linter_by_ft(vim.bo.filetype)) do
+				table.insert(names, lint)
+				if
+					not Utils.value_in_list(lint, self.ignore_lsp) and not Utils.value_in_list(lint, lsp_filtered_table)
+				then
+					table.insert(lsp_filtered_table, lint)
+				end
+			end
+		end
+
+		for _, formatter in pairs(require("conform").list_formatters()) do
+			table.insert(names, formatter.name)
+			if
+				not Utils.value_in_list(formatter.name, self.ignore_lsp)
+				and not Utils.value_in_list(formatter.name, lsp_filtered_table)
+			then
+				table.insert(lsp_filtered_table, formatter.name)
+			end
+		end
+
+		self.lsp_names = names
+		self.lsp_filtered_table = lsp_filtered_table
 	end,
-	hl = { fg = dim_color, bold = false },
-	-- on_click = {
-	--   name = 'heirline_lsp',
-	--   callback = function()
-	--     vim.cmd 'LspInfo'
-	--   end,
-	-- },
+	hl = { fg = "#98bb6c", bold = true },
+	{
+		condition = function(self)
+			return #self.lsp_filtered_table > 0
+		end,
+	},
+	M.LspServer,
 }
 
 M.FileType = {
@@ -600,45 +638,6 @@ M.SimpleIndicator = {
 	end,
 	hl = { fg = palette.sky },
 	provider = "",
-}
-
-M.LspProgress = {
-	provider = function()
-		return require("lsp-progress").progress({
-			format = function(messages)
-				local active_clients = vim.lsp.get_clients()
-				local client_count = #active_clients
-
-				if #messages > 0 then
-					return table.concat(messages, " ")
-				end
-
-				if client_count <= 0 then
-					return client_count
-				else
-					local name_set = {}
-					local client_names = {}
-
-					for _, client in ipairs(active_clients) do
-						if client and client.name ~= "" and not name_set[client.name] then
-							name_set[client.name] = true
-							table.insert(client_names, "[" .. client.name .. "]")
-						end
-					end
-
-					return table.concat(client_names, " ")
-				end
-			end,
-		})
-	end,
-	update = {
-		"User",
-		pattern = "LspProgressStatusUpdated",
-		callback = vim.schedule_wrap(function()
-			vim.cmd("redrawstatus")
-		end),
-	},
-	hl = { fg = dim_color, bold = false },
 }
 
 return M
