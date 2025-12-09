@@ -1,6 +1,8 @@
 local library = {
 	"C:\\Users\\zibo\\AppData\\Local\\bob\\nightly\\share\\nvim\\runtime",
 	vim.fs.joinpath(vim.fn.stdpath("data"), "/site/pack/core/opt/snacks.nvim"),
+	vim.fs.joinpath(vim.fn.stdpath("data"), "/site/pack/core/opt/sidekick.nvim"),
+	vim.fs.joinpath(vim.fn.stdpath("data"), "/site/pack/core/opt/conform.nvim"),
 }
 return {
 	cmd = { "lua-language-server", "--locale=zh-cn" },
