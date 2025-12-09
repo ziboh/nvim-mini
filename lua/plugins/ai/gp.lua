@@ -598,4 +598,5 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 		Utils.setup_keymaps(keys)
 	end,
+    once = true,
 })

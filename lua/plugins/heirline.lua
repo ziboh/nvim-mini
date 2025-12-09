@@ -4,10 +4,10 @@ vim.pack.add({
 
 vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
 	group = vim.api.nvim_create_augroup("SetupHeirline", { clear = true }),
-	once = true,
 	callback = function()
 		require("heirline").setup({
 			statusline = require("config.heirline.statusline"),
 		})
 	end,
+	once = true,
 })
