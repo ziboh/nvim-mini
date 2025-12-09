@@ -2,7 +2,7 @@ vim.pack.add({
 	{ src = "https://github.com/folke/sidekick.nvim" },
 })
 
-vim.api.nvim_create_autocmd("VimEnter", {
+Utils.create_autocmd_once("VimEnter", {
 	callback = function()
 		local opts = {
 			nes = { enabled = false },
@@ -123,5 +123,4 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		require("sidekick").setup(opts)
 		Utils.setup_keymaps(keys)
 	end,
-	once = true,
 })

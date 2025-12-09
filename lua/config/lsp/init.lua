@@ -67,7 +67,7 @@ end
 
 vim.diagnostic.config(diagnostics)
 vim.keymap.set("n", "<leader>pm", "<cmd>Mason<cr>", { remap = true, desc = "Mason" })
-vim.api.nvim_create_autocmd("BufEnter", {
+Utils.create_autocmd_once("BufEnter", {
 	callback = function()
 		if not Utils.is_memory_less_than() then
 			vim.pack.add({
@@ -338,5 +338,4 @@ vim.api.nvim_create_autocmd("BufEnter", {
 			})
 		end
 	end,
-	once = true,
 })

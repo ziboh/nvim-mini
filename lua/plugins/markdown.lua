@@ -1,7 +1,7 @@
 vim.pack.add({
 	{ src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" },
 })
-vim.api.nvim_create_autocmd("FileType", {
+Utils.create_autocmd_once("FileType", {
     pattern = "markdown",
 	callback = function()
 		local opts = {
@@ -34,5 +34,4 @@ vim.api.nvim_create_autocmd("FileType", {
 			end,
 		}):map("<leader>um")
 	end,
-	once = true,
 })

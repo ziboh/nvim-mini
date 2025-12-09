@@ -352,4 +352,16 @@ function M.feedkeys(keys, mode)
   -- Send the converted key sequence to Neovim's input buffer.
   vim.api.nvim_feedkeys(termcodes, mode, false)
 end
+
+function M.create_autocmd_once(event, opts)
+    -- 确保 opts 是一个 table
+    opts = opts or {}
+    
+    -- 设置 once = true
+    opts.once = true
+    
+    -- 调用原始函数
+    return vim.api.nvim_create_autocmd(event, opts)
+end
+
 return M

@@ -1,7 +1,7 @@
 vim.pack.add({
 	{ src = "https://github.com/gbprod/yanky.nvim" },
 })
-vim.api.nvim_create_autocmd("BufEnter", {
+Utils.create_autocmd_once("BufEnter", {
 	callback = function()
 		local keys = {
 			{ "y", "<Plug>(YankyYank)", mode = { "n", "x" }, desc = "Yank text" },
@@ -44,5 +44,4 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 		Utils.setup_keymaps(keys)
 	end,
-	once = true,
 })

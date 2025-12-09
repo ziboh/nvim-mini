@@ -50,13 +50,12 @@ vim.api.nvim_create_autocmd("FileType", {
 	pattern = "snacks_picker_list",
 	callback = function(args)
 		vim.opt.titlestring = "neovim-explorer"
-		vim.api.nvim_create_autocmd("BufLeave", {
+		Utils.create_autocmd_once("BufLeave", {
 			buffer = args.buf,
 			group = group,
 			callback = function()
 				vim.opt.titlestring = "neovim"
 			end,
-			once = true,
 		})
 	end,
 })

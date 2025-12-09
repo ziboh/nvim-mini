@@ -117,7 +117,7 @@ function M.setup(opts)
 	else
 		vim.notify("未能启动 rime_ls，跳过 LSP 配置", vim.log.levels.WARN)
 	end
-	vim.api.nvim_create_autocmd("User", {
+	Utils.create_autocmd_once("User", {
 		pattern = "BlinkLoaded",
 		callback = function()
 			require("blink.cmp.completion.list").show_emitter:on(function(event)
@@ -140,7 +140,6 @@ function M.setup(opts)
 				end)
 			end)
 		end,
-		once = true,
 	})
 end
 

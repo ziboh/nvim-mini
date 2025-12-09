@@ -7,7 +7,7 @@ else
 	})
 end
 
-vim.api.nvim_create_autocmd("BufEnter", {
+Utils.create_autocmd_once("BufEnter", {
 	callback = function()
 		local trans_win
 		local prompt = require("plugins.ai.prompt")
@@ -598,5 +598,4 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 		Utils.setup_keymaps(keys)
 	end,
-    once = true,
 })

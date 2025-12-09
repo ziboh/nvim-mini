@@ -1,7 +1,7 @@
 vim.pack.add({
 	{ src = "https://github.com/akinsho/bufferline.nvim" },
 })
-vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+Utils.create_autocmd_once({ "BufReadPre", "BufNewFile" }, {
 	callback = function()
 		require("bufferline").setup({
 			options = {
@@ -52,5 +52,4 @@ vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
 		}
 		Utils.setup_keymaps(keys)
 	end,
-	once = true,
 })

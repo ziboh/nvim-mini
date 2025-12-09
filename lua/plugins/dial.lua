@@ -2,7 +2,7 @@ vim.pack.add({
 	{ src = "https://github.com/monaqa/dial.nvim" },
 })
 
-vim.api.nvim_create_autocmd("BufEnter", {
+Utils.create_autocmd_once("BufEnter", {
 	callback = function()
 		local augend = require("dial.augend")
 		require("dial.config").augends:register_group({
@@ -129,5 +129,4 @@ vim.api.nvim_create_autocmd("BufEnter", {
 		}
 		Utils.setup_keymaps(keys)
 	end,
-	once = true,
 })

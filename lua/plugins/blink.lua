@@ -2,7 +2,7 @@ vim.pack.add({
 	{ src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.x") },
 	"https://github.com/saghen/blink.compat",
 })
-vim.api.nvim_create_autocmd("InsertEnter", {
+Utils.create_autocmd_once("InsertEnter", {
 	callback = function()
 		local opts = {
 			completion = {
@@ -186,5 +186,4 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 		require("blink.cmp").setup(opts)
 		vim.api.nvim_exec_autocmds("User", { pattern = "BlinkLoaded" })
 	end,
-	once = true,
 })

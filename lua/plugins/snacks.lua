@@ -854,6 +854,13 @@ local keys = {
 		end,
 		desc = "Find Scratch",
 	},
+	{
+		"<leader><enter>",
+		function()
+			Snacks.picker.resume()
+		end,
+		desc = "Resume",
+	},
 }
 
 Utils.setup_keymaps(keys)

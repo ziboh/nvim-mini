@@ -1,7 +1,7 @@
 vim.pack.add({
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 })
-vim.api.nvim_create_autocmd("Filetype", {
+Utils.create_autocmd_once("Filetype", {
 	callback = function()
 		---@diagnostic disable-next-line: missing-fields
 		require("nvim-treesitter.configs").setup({
@@ -12,5 +12,4 @@ vim.api.nvim_create_autocmd("Filetype", {
 			indent = { enable = true },
 		})
 	end,
-	once = true,
 })

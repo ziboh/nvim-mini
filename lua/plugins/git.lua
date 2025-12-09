@@ -3,7 +3,7 @@ vim.pack.add({
 	{ src = "https://github.com/esmuellert/vscode-diff.nvim" },
 	{ src = "https://github.com/MunifTanjim/nui.nvim" },
 })
-vim.api.nvim_create_autocmd("BufReadPost", {
+Utils.create_autocmd_once("BufReadPost", {
 	callback = function()
 		require("vscode-diff").setup()
 		vim.api.nvim_set_hl(0, "CodeDiffFiller", { fg = "#fcf4ec" })
@@ -129,5 +129,4 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 		Utils.setup_keymaps(keys)
 	end,
-	once = true,
 })

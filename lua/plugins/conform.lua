@@ -2,7 +2,7 @@ vim.pack.add({
 	{ src = "https://github.com/stevearc/conform.nvim" },
 })
 
-vim.api.nvim_create_autocmd("Filetype", {
+Utils.create_autocmd_once("Filetype", {
 	callback = function()
 		require("conform").setup({
 			formatters_by_ft = {
@@ -19,5 +19,4 @@ vim.api.nvim_create_autocmd("Filetype", {
 			require("conform").format()
 		end, { noremap = true, silent = true, desc = "Formatting" })
 	end,
-	once = true,
 })

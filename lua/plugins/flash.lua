@@ -1,7 +1,7 @@
 vim.pack.add({
 	{ src = "https://github.com/folke/flash.nvim" },
 })
-vim.api.nvim_create_autocmd("BufEnter", {
+Utils.create_autocmd_once("BufEnter", {
 	callback = function()
         -- stylua: ignore
         local  keys = {
@@ -11,7 +11,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
             { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
             { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
         }
-        Utils.setup_keymaps(keys)
-        require("flash").setup()
+		Utils.setup_keymaps(keys)
+		require("flash").setup()
 	end,
 })

@@ -2,7 +2,7 @@ vim.pack.add({
 	{ src = "https://github.com/supermaven-inc/supermaven-nvim" },
 })
 
-vim.api.nvim_create_autocmd("InsertEnter", {
+Utils.create_autocmd_once("InsertEnter", {
 	callback = function()
 		local opts = {
 			keymaps = {
@@ -28,5 +28,4 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 			end,
 		}):map("<leader>as")
 	end,
-	once = true,
 })

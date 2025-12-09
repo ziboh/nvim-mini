@@ -2,7 +2,7 @@ vim.pack.add({
 	{ src = "https://github.com/mrjones2014/smart-splits.nvim" },
 })
 
-vim.api.nvim_create_autocmd("BufEnter", {
+Utils.create_autocmd_once("BufEnter", {
 	callback = function()
 		local keys = {
 			{
@@ -65,5 +65,4 @@ vim.api.nvim_create_autocmd("BufEnter", {
 		require("smart-splits").setup({})
 		Utils.setup_keymaps(keys)
 	end,
-	once = true,
 })
