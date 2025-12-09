@@ -299,6 +299,7 @@ local opts = {
 			},
 		},
 	},
+	words = { enabled = true },
 }
 if Utils.is_win() then
 	local scripts_path = vim.env.HOME .. "\\Documents\\Nushell\\Scripts\\edit_nvim_remote.nu"

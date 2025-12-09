@@ -3,7 +3,7 @@ vim.pack.add({
 	{ src = "https://github.com/esmuellert/vscode-diff.nvim" },
 	{ src = "https://github.com/MunifTanjim/nui.nvim" },
 })
-Utils.create_autocmd_once("BufReadPost", {
+Utils.create_autocmd_once({ "BufReadPre", "BufNewFile" }, {
 	callback = function()
 		require("vscode-diff").setup()
 		vim.api.nvim_set_hl(0, "CodeDiffFiller", { fg = "#fcf4ec" })
