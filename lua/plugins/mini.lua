@@ -29,10 +29,15 @@ require("mini.icons").setup({
 		[".keep"] = { glyph = "󰊢", hl = "MiniIconsGrey" },
 		["devcontainer.json"] = { glyph = "", hl = "MiniIconsAzure" },
 		["compose.yaml"] = { glyph = "󰡨", hl = "MiniIconsAzure" },
+		["dot_gitconfig"] = { glyph = "󰒓", hl = "MiniIconsOrange" },
+	},
+	extension = {
+		age = { glyph = "", hl = "MiniIconsOrange" },
 	},
 	filetype = {
 		dotenv = { glyph = "", hl = "MiniIconsYellow" },
 		yaml = { glyph = "", hl = "MiniIconsPurple" },
+		["yaml.chezmoitmpl"] = { glyph = "", hl = "MiniIconsPurple" },
 		outline = { glyph = "󰱺", hl = "MiniIconsYellow" },
 		nu = { glyph = "", hl = "MiniIconsGreen" },
 		nushell = { glyph = "", hl = "MiniIconsGreen" },

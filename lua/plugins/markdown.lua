@@ -1,8 +1,11 @@
 vim.pack.add({
 	{ src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" },
 })
+vim.api.nvim_set_hl(0, "RenderMarkdownCode", { bg = "#282c34" })
+vim.api.nvim_set_hl(0, "RenderMarkdownCodeInline", { bg = "#282c34" })
+vim.api.nvim_set_hl(0, "RenderMarkdown_RenderMarkdownCodeBorder_bg_as_fg", { fg = "#282c34" })
 Utils.create_autocmd_once("FileType", {
-    pattern = "markdown",
+	pattern = "markdown",
 	callback = function()
 		local opts = {
 			file_types = { "markdown", "Avante" },
@@ -15,9 +18,6 @@ Utils.create_autocmd_once("FileType", {
 		}
 
 		require("render-markdown").setup(opts)
-
-		vim.api.nvim_set_hl(0, "RenderMarkdownCode", { bg = "#1e2124" })
-		vim.api.nvim_set_hl(0, "RenderMarkdownCodeInline", { bg = "#1e2124" })
 
 		Snacks.toggle({
 			name = "Render Markdown",
