@@ -1,7 +1,7 @@
 vim.pack.add({
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 })
-Utils.create_autocmd_once("Filetype", {
+Utils.create_autocmd_once("FileType", {
 	callback = function()
 		local opts = {
 			ensure_installed = {},
