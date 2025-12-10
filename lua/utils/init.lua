@@ -78,7 +78,9 @@ function M.is_available_memory_less_than(gb)
 	return available_memory < threshold
 end
 
--- 检查空闲内存
+--- 检查空闲内存是否小于指定阈值
+--- @param gb number 阈值大小，单位为GB，默认为1GB
+--- @return boolean 如果空闲内存小于阈值则返回true，否则返回false
 function M.is_free_memory_less_than_1gb(gb)
 	gb = gb or 1
 	local threshold = gb * 1024 * 1024 * 1024
