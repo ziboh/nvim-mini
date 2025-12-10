@@ -397,34 +397,6 @@ M.Lsp = {
 	M.LspServer,
 }
 
-M.CodeiumStatus = {
-	init = function(self)
-		self.codeium_exist = vim.fn.exists("*codeium#GetStatusString") == 1
-		self.codeium_status = self.codeium_exist and vim.fn["codeium#GetStatusString"]() or nil
-	end,
-	provider = function(self)
-		if not self.codeium_exist then
-			return ""
-		end
-		if self.codeium_status == " ON" then
-			return "󰚩 "
-		elseif self.codeium_status == " OFF" then
-			return "󱚡 "
-		else
-			return "󱚝 "
-		end
-	end,
-	hl = function(self)
-		if self.codeium_status == " ON" then
-			return { fg = palette.green }
-		elseif self.codeium_status == " OFF" then
-			return { fg = palette.gray }
-		else
-			return { fg = palette.maroon }
-		end
-	end,
-}
-
 -- Git
 M.Git = {
 	condition = conditions.is_git_repo,
@@ -589,46 +561,6 @@ M.Overseer = {
 	M.RightPadding(OverseerTasksForStatus("SUCCESS")),
 	M.RightPadding(OverseerTasksForStatus("FAILURE")),
 }
-
-M.FileNameBlock = {
-	init = function(self)
-		local bufnr = self.bufnr and self.bufnr or 0
-		self.filename = vim.api.nvim_buf_get_name(bufnr)
-	end,
-	hl = { fg = palette.text },
-	M.FileIcon,
-	M.FileName,
-	M.FileFlags,
-}
-
-M.FilePathBlock = {
-	init = function(self)
-		local bufnr = self.bufnr and self.bufnr or 0
-		self.filename = vim.api.nvim_buf_get_name(bufnr)
-	end,
-	hl = { fg = palette.text },
-	M.FileIcon,
-	M.FileName,
-	M.FileFlags,
-}
-
-M.TablineFileNameBlock = vim.tbl_extend("force", M.FileNameBlock, {
-	on_click = {
-		callback = function(_, minwid, _, button)
-			if button == "m" then -- close on mouse middle click
-				vim.schedule(function()
-					vim.api.nvim_buf_delete(minwid, { force = false })
-				end)
-			else
-				vim.api.nvim_win_set_buf(0, minwid)
-			end
-		end,
-		minwid = function(self)
-			return self.bufnr
-		end,
-		name = "heirline_tabline_buffer_callback",
-	},
-})
 
 vim.opt.showcmdloc = "statusline"
 M.ShowCmd = {
