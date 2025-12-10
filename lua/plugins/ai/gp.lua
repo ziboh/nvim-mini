@@ -16,12 +16,11 @@ Utils.create_autocmd_once("BufEnter", {
 		require("gp").setup({
 			chat_dir = vim.env.GP_DIR == nil and vim.fn.stdpath("data"):gsub("/$", "") .. "/gp/chats"
 				or vim.env.GP_DIR .. "/chats",
-			log_file = vim.fs.normalize(
-				vim.env.GP_DIR == nil and vim.fn.stdpath("data"):gsub("/$", "") .. "/gp/gp.log"
-					or vim.env.GP_DIR .. "/gp.log"
-			),
+			log_file = vim.fs.joinpath(vim.fn.stdpath("data"), "/gp/gp.log"),
 			state_dir = vim.env.GP_DIR == nil and vim.fn.stdpath("data"):gsub("/$", "") .. "/gp/persisted"
 				or vim.env.GP_DIR .. "/persisted",
+
+			chat_show_reasoning = true, -- 设置为 false 以隐藏 reasoning
 			chat_free_cursor = true,
 			openai_api_key = false,
 			providers = {

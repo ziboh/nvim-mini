@@ -109,6 +109,7 @@ local rime_on_attach = function(client, _)
 					end)
 				end
 			end
+			vim.g.rime_enabled = not vim.g.rime_enabled
 		end)
 	end, { nargs = 0 })
 
@@ -118,13 +119,11 @@ local rime_on_attach = function(client, _)
 			return vim.g.rime_enabled
 		end,
 		set = function(enabled)
-			if enabled then
-				vim.g.rime_enabled = true
-			else
-				vim.g.rime_enabled = false
+			if enabled ~= vim.g.rime_enabled then
+				vim.cmd("RimeToggle")
 			end
 		end,
-	}):map("<C-M-F12>")
+	}):map("<C-M-F12>", { mode = { "n", "i" } })
 end
 
 local opts = {

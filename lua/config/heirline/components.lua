@@ -121,39 +121,40 @@ M.Rime = {
 		end
 		return false
 	end,
+	on_click = {
+		name = "heirline_rime",
+		callback = function()
+			if vim.g.rime_enabled == true then
+				Snacks.notify.warn("Disabled Rime", { title = "Rime" })
+			else
+				Snacks.notify("Enabled Rime", { title = "Rime" })
+			end
+			vim.cmd("RimeToggle")
+		end,
+	},
+	flexible = 10,
+	static = {
+		icon = " ",
+		text = "Rime",
+		enabled_hl = { fg = "#98bb6c", bold = true },
+		disabled_hl = { fg = "#ed8796", bold = true },
+	},
+	init = function(self)
+		if vim.g.rime_enabled then
+			self.hl = self.enabled_hl
+		else
+			self.hl = self.disabled_hl
+		end
+	end,
 	{
-		on_click = {
-			name = "heirline_rime",
-			callback = function()
-				vim.cmd("RimeToggle")
-			end,
-		},
-		{
-			flexible = 10,
-			static = {
-				icon = " ",
-				text = "Rime",
-				enabled_hl = { fg = "#98bb6c", bold = true },
-				disabled_hl = { fg = "#ed8796", bold = true },
-			},
-			init = function(self)
-				if vim.g.rime_enabled then
-					self.hl = self.enabled_hl
-				else
-					self.hl = self.disabled_hl
-				end
-			end,
-			{
-				provider = function(self)
-					return self.icon .. self.text
-				end,
-			},
-			{
-				provider = function(self)
-					return self.icon
-				end,
-			},
-		},
+		provider = function(self)
+			return self.icon .. self.text
+		end,
+	},
+	{
+		provider = function(self)
+			return self.icon
+		end,
 	},
 }
 M.SuperMaven = {

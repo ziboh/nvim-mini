@@ -11,8 +11,10 @@ setmetatable(M, {
 	end,
 })
 
----@param value any
----@param list any[]
+--- Checks if a value exists in a list
+---@param value any The value to search for
+---@param list any[] The list to search in
+---@return boolean|nil True if the value is found, nil otherwise
 function M.value_in_list(value, list)
 	for _, v in ipairs(list) do
 		if v == value then
@@ -371,6 +373,20 @@ function M.create_autocmd_once(event, opts)
 
 	-- 调用原始函数
 	return vim.api.nvim_create_autocmd(event, opts)
+end
+
+---@param on_attach fun(client:vim.lsp.Client, buffer)
+---@param name? string
+function M.on_attach(on_attach, name)
+	return vim.api.nvim_create_autocmd("LspAttach", {
+		callback = function(args)
+			local buffer = args.buf ---@type number
+			local client = vim.lsp.get_client_by_id(args.data.client_id)
+			if client and (not name or client.name == name) then
+				return on_attach(client, buffer)
+			end
+		end,
+	})
 end
 
 return M
