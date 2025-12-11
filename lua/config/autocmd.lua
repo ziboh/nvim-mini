@@ -111,3 +111,29 @@ vim.api.nvim_create_autocmd("FileType", {
 		end)
 	end,
 })
+
+local function apply_chezmoi_file()
+	local source_dir = vim.fn.trim(vim.fn.system("chezmoi source-path"))
+	local buf_path = vim.api.nvim_buf_get_name(0)
+	local rel_path = vim.fs.relpath(source_dir, vim.fn.fnamemodify(buf_path, ":p"))
+	if buf_path == "" or not rel_path or rel_path:sub(1, 1) == "." then
+		return
+	end
+	-- 转换路径
+	rel_path = rel_path:gsub("^dot%_", "."):gsub("%.tmpl$", ""):gsub("/dot%.", "/.")
+	local target_path = vim.fs.joinpath(vim.fn.expand("~"), rel_path)
+
+	-- 异步应用
+	vim.system({ "chezmoi", "apply", target_path }, { text = true }, function(result)
+		if result.code == 0 then
+			Snacks.notify("chezmoi apply " .. target_path, { title = "chezmoi" })
+		else
+			Snacks.notify.error("chezmoi apply error: " .. target_path, { title = "chezmoi" })
+		end
+	end)
+end
+
+-- 自动命令
+vim.api.nvim_create_autocmd("BufWritePost", {
+	callback = apply_chezmoi_file,
+})
