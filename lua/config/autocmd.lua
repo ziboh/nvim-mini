@@ -113,6 +113,9 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 local function apply_chezmoi_file()
+	if vim.fn.executable("chezmoi") == 0 then
+		return
+	end
 	local source_dir = vim.fn.trim(vim.fn.system("chezmoi source-path"))
 	local buf_path = vim.api.nvim_buf_get_name(0)
 	local rel_path = vim.fs.relpath(source_dir, vim.fn.fnamemodify(buf_path, ":p"))
@@ -136,4 +139,13 @@ end
 -- 自动命令
 vim.api.nvim_create_autocmd("BufWritePost", {
 	callback = apply_chezmoi_file,
+})
+
+Utils.create_autocmd_once("BufFilePost", {
+	callback = function()
+		vim.schedule(function()
+			vim.opt.titlestring = ""
+			vim.opt.titlestring = "neovim"
+		end)
+	end,
 })

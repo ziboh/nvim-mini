@@ -1,10 +1,10 @@
 {
-  "pack": {
-    "prefix": "pack",
-    "body": [
-        "vim.pack.add({",
-        "\t{ src = \"https://github.com/${1}\" }",
-        "})"
-    ]
-  }
+    "pack": {
+        "prefix": "pack",
+        "body": [
+            "vim.pack.add({",
+            "\t{ src = \"https://github.com/${1}\" }",
+            "})"
+        ]
+    }
 }
