@@ -841,6 +841,13 @@ local keys = {
 		desc = "Notifications",
 	},
 	{
+		"<leader>fl",
+		function()
+			Snacks.picker.lines()
+		end,
+		desc = "Search lines",
+	},
+	{
 		"<leader>fz",
 		function()
 			Snacks.picker.zoxide()

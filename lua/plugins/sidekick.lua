@@ -46,6 +46,14 @@ Utils.create_autocmd_once("VimEnter", {
 				desc = "Goto/Apply Next Edit Suggestion",
 			},
 			{
+				"<M-C-F7>",
+				function()
+					require("sidekick.cli").toggle()
+				end,
+				desc = "Sidekick Toggle",
+				mode = { "n", "t", "i", "x" },
+			},
+			{
 				"<leader>aa",
 				function()
 					require("sidekick.cli").toggle()

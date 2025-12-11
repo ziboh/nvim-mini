@@ -3,8 +3,13 @@ vim.pack.add({
 	{ src = "https://github.com/esmuellert/vscode-diff.nvim" },
 	{ src = "https://github.com/MunifTanjim/nui.nvim" },
 })
+local diff_loaded = false
 Utils.create_autocmd_once({ "BufReadPre", "BufNewFile" }, {
 	callback = function()
+		if diff_loaded then
+			return
+		end
+		diff_loaded = true
 		require("vscode-diff").setup()
 		vim.api.nvim_set_hl(0, "CodeDiffFiller", { fg = "#fcf4ec" })
 		require("gitsigns").setup({

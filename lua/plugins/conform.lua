@@ -1,14 +1,19 @@
-vim.pack.add({
-	{ src = "https://github.com/stevearc/conform.nvim" },
-})
+local project_dir = vim.env.PROJECT_DIRS
+if project_dir ~= nil and vim.fn.isdirectory(vim.fs.joinpath(project_dir, "conform.nvim")) == 1 then
+	vim.opt.rtp:append(vim.fs.joinpath(project_dir, "conform.nvim"))
+else
+	vim.pack.add({
+		"https://github.com/stevearc/conform.nvim",
+	})
+end
 
-Utils.create_autocmd_once("Filetype", {
+Utils.create_autocmd_once("FileType", {
 	callback = function()
 		require("conform").setup({
 			formatters_by_ft = {
 				lua = { "stylua" },
 				-- Conform will run multiple formatters sequentially
-				python = { "isort", "black" },
+				python = { "ruff", "black" },
 				-- You can customize some of the format options for the filetype (:help conform.format)
 				rust = { "rustfmt", lsp_format = "fallback" },
 				-- Conform will run the first available formatter

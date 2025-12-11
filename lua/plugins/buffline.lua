@@ -1,8 +1,14 @@
 vim.pack.add({
 	{ src = "https://github.com/akinsho/bufferline.nvim" },
 })
+
+local buffline_loaded = false
 Utils.create_autocmd_once({ "BufReadPre", "BufNewFile" }, {
 	callback = function()
+		if buffline_loaded then
+			return
+		end
+		buffline_loaded = true
 		require("bufferline").setup({
 			options = {
 				close_command = function(n)

@@ -4,8 +4,13 @@ vim.pack.add({
 	"https://github.com/nvim-mini/mini.pairs",
 })
 
+local hipatterns_loaded = false
 Utils.create_autocmd_once({ "BufReadPre", "BufNewFile" }, {
 	callback = function()
+		if hipatterns_loaded then
+			return
+		end
+		hipatterns_loaded = true
 		local hipatterns = require("mini.hipatterns")
 		hipatterns.setup({
 			highlighters = {
