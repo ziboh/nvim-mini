@@ -18,7 +18,6 @@ local mason_opts = {
 		"stylua",
 		"shfmt",
 		"prettierd",
-		"ruff",
 	},
 }
 require("mason").setup(mason_opts)
@@ -81,21 +80,21 @@ Utils.create_autocmd_once({ "BufReadPre", "FileType", "BufNewFile" }, {
 						{
 							"<leader>h",
 							function()
-								return vim.lsp.buf.hover()
+								vim.lsp.buf.hover({ silent = true })
 							end,
 							desc = "Hover",
 						},
 						{
 							"K",
 							function()
-								return vim.lsp.buf.hover()
+								vim.lsp.buf.hover({ silent = true })
 							end,
 							desc = "Hover",
 						},
 						{
 							"<leader>lh",
 							function()
-								return vim.lsp.buf.signature_help()
+								vim.lsp.buf.signature_help()
 							end,
 							desc = "Signature Help",
 							has = "signatureHelp",
@@ -103,7 +102,7 @@ Utils.create_autocmd_once({ "BufReadPre", "FileType", "BufNewFile" }, {
 						{
 							"<c-k>",
 							function()
-								return vim.lsp.buf.signature_help()
+								vim.lsp.buf.signature_help()
 							end,
 							mode = "i",
 							desc = "Signature Help",
@@ -213,7 +212,9 @@ Utils.create_autocmd_once({ "BufReadPre", "FileType", "BufNewFile" }, {
 			if file ~= "init.lua" and file:match("%.lua$") then
 				local filename = file:gsub("%.lua$", "")
 				local lsp_opts = require("config.lsp." .. filename)
-				opts = vim.tbl_deep_extend("force", opts, lsp_opts)
+				if lsp_opts then
+					opts = vim.tbl_deep_extend("force", opts, lsp_opts)
+				end
 			end
 		end, lsp_config_filename)
 
