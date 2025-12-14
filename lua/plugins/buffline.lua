@@ -2,13 +2,8 @@ vim.pack.add({
 	{ src = "https://github.com/akinsho/bufferline.nvim" },
 })
 
-local buffline_loaded = false
-Utils.create_autocmd_once({ "BufReadPre", "BufNewFile" }, {
+Utils.create_autocmd_once("UIEnter", {
 	callback = function()
-		if buffline_loaded then
-			return
-		end
-		buffline_loaded = true
 		require("bufferline").setup({
 			options = {
 				close_command = function(n)
@@ -58,5 +53,7 @@ Utils.create_autocmd_once({ "BufReadPre", "BufNewFile" }, {
 			{ "<C-]>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
 		}
 		Utils.setup_keymaps(keys)
+
+		vim.opt.showtabline = 2 -- 总是显示标签栏
 	end,
 })

@@ -64,13 +64,14 @@ opt.undofile = true -- 启用撤销文件功能
 opt.swapfile = false -- 关闭交换文件
 
 -- 界面显示设置
-opt.laststatus = 3 -- 全局状态栏
+opt.laststatus = 0 -- 设置为0
 opt.showmode = false -- 不显示当前模式提示（如 --INSERT--）
 opt.termguicolors = true -- 启用终端真彩色支持
 opt.cursorline = true -- 高亮光标所在行
 opt.number = true -- 显示绝对行号
 opt.relativenumber = true -- 显示相对行号
 opt.showtabline = 2 -- 总是显示标签栏
+vim.opt.tabline = "%!v:lua.Utils.Empty()" -- 显示为空，等待插件启动
 opt.signcolumn = "yes" -- 总是显示标志列
 opt.wrap = true -- 默认自动换行
 opt.breakat = "" -- 设置换行字符

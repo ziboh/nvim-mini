@@ -507,4 +507,7 @@ end
 
 vim.api.nvim_create_user_command("UpdateTopiaryNushell", M.update_topiary_nushell, {})
 
+function M.Empty()
+	return ""
+end
 return M
