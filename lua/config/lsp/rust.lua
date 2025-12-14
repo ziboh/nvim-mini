@@ -1,4 +1,8 @@
-local diagnostics = vim.g.lazyvim_rust_diagnostics or "rust-analyzer"
+local diagnostics = "rust-analyzer" -- rust-analyzer 或 bacon-ls
+if Utils.is_linux() then
+	diagnostics = "bacon-ls"
+	Utils.mason_add_ensure_installed("bacon")
+end
 vim.pack.add({
 	"https://github.com/saecki/crates.nvim",
 	"https://github.com/mrcjkb/rustaceanvim",
@@ -94,7 +98,11 @@ Utils.create_autocmd_once("BufReadPre", {
 
 return {
 	servers = {
-		["rust-analyzer"] = {
+		bacon_ls = {
+			enabled = diagnostics == "bacon-ls",
+		},
+		rust_analyzer = {
+			enabled = false,
 			keys = {
 				{
 					"<leader>la",

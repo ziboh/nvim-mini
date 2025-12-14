@@ -510,4 +510,24 @@ vim.api.nvim_create_user_command("UpdateTopiaryNushell", M.update_topiary_nushel
 function M.Empty()
 	return ""
 end
+
+--- Add tools to mason's ensure_installed list
+--- @param tools string|string[] List of tools to add
+function M.mason_add_ensure_installed(tools)
+	-- Ensure tools is a table
+	if type(tools) == "string" then
+		tools = { tools }
+	end
+
+	-- Get current config or create default structure
+	local mason_opts = vim.g.mason_opts or {}
+	mason_opts.ensure_installed = mason_opts.ensure_installed or {}
+
+	-- Extend the list
+	vim.list_extend(mason_opts.ensure_installed, tools)
+
+	-- Write back to global variable
+	vim.g.mason_opts = mason_opts
+end
+
 return M

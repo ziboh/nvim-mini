@@ -10,6 +10,27 @@ vim.api.nvim_create_autocmd("FileType", {
 	group = vim.api.nvim_create_augroup("AutoSetFileType", {}),
 	pattern = "json",
 	callback = function()
+		local filepath = vim.fn.expand("%:p") -- 获取完整文件路径
+
+		-- 排除名单 - 这些文件将使用标准 json filetype
+		local exclude_patterns = {
+			"/package%.json$", -- package.json
+			"/tsconfig%.json$", -- TypeScript 配置
+			"/composer%.json$", -- PHP composer
+			"/bower%.json$", -- Bower 配置
+			"%/schema%.json$", -- Schema 文件
+			"/swagger%.json$", -- Swagger 配置
+			"/openapi%.json$", -- OpenAPI 配置
+		}
+
+		-- 检查是否匹配排除模式
+		for _, pattern in ipairs(exclude_patterns) do
+			if string.match(filepath, pattern) then
+				return
+			end
+		end
+
+		-- 默认使用 jsonc
 		vim.bo.filetype = "jsonc"
 	end,
 })
@@ -45,9 +66,28 @@ vim.api.nvim_create_autocmd("CmdlineLeave", {
 	end,
 })
 
+vim.api.nvim_create_autocmd("BufEnter", {
+	group = group,
+	callback = function(args)
+		if vim.bo.filetype == "snacks_explorer_list" then
+			vim.schedule(function()
+				vim.opt.titlestring = "neovim-explorer"
+			end)
+
+			Utils.create_autocmd_once("BufLeave", {
+				buffer = args.buf,
+				group = group,
+				callback = function()
+					vim.opt.titlestring = "neovim"
+				end,
+			})
+		end
+	end,
+})
+
 vim.api.nvim_create_autocmd("FileType", {
 	group = group,
-	pattern = "snacks_picker_list",
+	pattern = "snacks_explorer_list",
 	callback = function(args)
 		vim.opt.titlestring = "neovim-explorer"
 		Utils.create_autocmd_once("BufLeave", {

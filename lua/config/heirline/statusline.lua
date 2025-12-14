@@ -1,7 +1,13 @@
 local components = require("config.heirline.components")
 vim.o.cmdheight = 0
+local conditions = require("heirline.conditions")
 
 return { -- statusline
+	condition = function()
+		return not conditions.buffer_matches({
+			filetype = { "snacks_dashboard" },
+		})
+	end,
 	components.RightPadding(components.Mode, 1),
 	components.RightPadding(components.FileType, 1),
 	components.RightPadding(components.Git, 1),

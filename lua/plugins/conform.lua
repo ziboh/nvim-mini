@@ -7,6 +7,8 @@ else
 	})
 end
 
+Utils.mason_add_ensure_installed({ "biome", "prettierd" })
+
 Utils.create_autocmd_once("FileType", {
 	callback = function()
 		vim.g.autoformat = true
@@ -14,10 +16,10 @@ Utils.create_autocmd_once("FileType", {
 			formatters_by_ft = {
 				nu = { "topiary_nu" },
 				lua = { "stylua" },
-				-- You can customize some of the format options for the filetype (:help conform.format)
 				rust = { "rustfmt", lsp_format = "fallback" },
-				-- Conform will run the first available formatter
-				javascript = { "prettierd", "prettier", stop_after_first = true },
+				javascript = { "biome", "prettierd", stop_after_first = true },
+				jsonc = { "biome" },
+				json = { "biome" },
 				python = function(bufnr)
 					if require("conform").get_formatter_info("ruff_format", bufnr).available then
 						return { "ruff_format" }

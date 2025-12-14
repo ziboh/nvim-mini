@@ -44,20 +44,16 @@ M.FileType = {
 	end,
 	init = function(self)
 		self.filetype = vim.bo.filetype
-		if self.filetype:match("(snacks_picker).*") == "snacks_picker" then
+		if self.filetype == "snacks_explorer_list" then
 			local explore_picker = Snacks.picker.get({ source = "explorer" })
-			local explore_exist = false
 			if #explore_picker ~= 0 then
 				explore_picker = explore_picker[1]
-				explore_exist = true
 			end
-			---@diagnostic disable-next-line: undefined-field
-			if explore_exist and explore_picker:is_focused() then
-				---@diagnostic disable-next-line: undefined-field
-				local dir = explore_picker:dir()
-				self.icon, self.icon_hl = Snacks.util.icon(dir, "directory")
-				self.filetype = dir
-			elseif self.filetype == "snacks_picker_input" then
+			local dir = explore_picker:dir()
+			self.icon, self.icon_hl = Snacks.util.icon(dir, "directory")
+			self.filetype = dir
+		elseif self.filetype:match("(snacks_picker).*") == "snacks_picker" then
+			if self.filetype == "snacks_picker_input" then
 				self.icon = ""
 				self.icon_hl = "MiniIconsCyan"
 				self.filetype = "Input"

@@ -175,13 +175,15 @@ local opts = {
 			clear_input = function(picker)
 				vim.api.nvim_buf_set_lines(picker.input.win.buf, 0, -1, false, {})
 			end,
-			delect_file = function(picker)
+			delect_file = function(picker, item)
 				local options = { "Yes", "No" }
-				vim.ui.select(options, {}, function(choice)
+				vim.ui.select(options, {
+					prompt = "Delete " .. item._path,
+				}, function(choice)
 					if choice == "Yes" then
 						local items = picker:selected({ fallback = true })
-						for _, item in ipairs(items) do
-							local path = item._path
+						for _, i in ipairs(items) do
+							local path = i._path
 							local ok, err = pcall(vim.fn.delete, path, "rf")
 							if ok then
 								Snacks.bufdelete({ file = path, force = true })
@@ -205,12 +207,16 @@ local opts = {
 			local input = picker.input.win
 			if input then
 				input:on("InsertEnter", function()
-					vim.opt.titlestring = "input"
-					-- The title you set will not take effect immediately; you need to manually execute redraw.
-					vim.cmd("redraw")
+					if input.buf == vim.api.nvim_get_current_buf() then
+						vim.schedule(function()
+							vim.opt.titlestring = "input"
+						end)
+					end
 				end)
 				input:on("InsertLeave", function()
-					vim.opt.titlestring = "neovim"
+					vim.schedule(function()
+						vim.opt.titlestring = "neovim"
+					end)
 				end)
 			end
 		end,
@@ -230,6 +236,16 @@ local opts = {
 			explorer = {
 				win = {
 					list = {
+						on_buf = function(win)
+							vim.defer_fn(function()
+								if win:buf_valid() then
+									vim.bo[win.buf].filetype = "snacks_explorer_list"
+								end
+							end, 100)
+						end,
+						bo = {
+							filetype = "snacks_explorer_list",
+						},
 						keys = {
 							["<leader>"] = "confirm",
 						},
@@ -283,16 +299,29 @@ local opts = {
 		enabled = true,
 		win = {
 			on_win = function(input)
+				vim.g.input_title = vim.api.nvim_eval("&titlestring")
 				if input then
 					input:on("InsertEnter", function()
-						vim.opt.titlestring = "input"
-						-- The title you set will not take effect immediately; you need to manually execute redraw.
-						vim.cmd("redraw")
+						if input:focus() then
+							vim.schedule(function()
+								vim.opt.titlestring = "input"
+							end)
+						end
 					end)
 					input:on("InsertLeave", function()
-						vim.opt.titlestring = "neovim"
+						if input:focus() then
+							vim.schedule(function()
+								vim.opt.titlestring = "neovim"
+							end)
+						end
 					end)
 				end
+			end,
+
+			on_close = function()
+				vim.schedule(function()
+					vim.opt.titlestring = vim.g.input_title
+				end)
 			end,
 		},
 	},

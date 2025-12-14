@@ -10,35 +10,40 @@ if not Utils.is_memory_less_than() then
 	})
 end
 
-local mason_opts = {
+vim.g.mason_opts = {
 	github = {
 		download_url_template = "https://ghfast.top/https://github.com/%s/releases/download/%s/%s",
 	},
 	ensure_installed = {
 		"stylua",
 		"shfmt",
-		"prettierd",
 	},
 }
-require("mason").setup(mason_opts)
 
-local mr = require("mason-registry")
-mr:on("package:install:success", function()
-	vim.defer_fn(function()
-		-- trigger FileType event to possibly load this newly installed LSP server
-		vim.api.nvim_exec_autocmds("FileType", { buffer = vim.api.nvim_get_current_buf() })
-	end, 100)
-end)
+Utils.create_autocmd_once("User", {
+	pattern = "ConfigLoaded",
+	callback = function()
+		local mr = require("mason-registry")
+		mr:on("package:install:success", function()
+			vim.defer_fn(function()
+				-- trigger FileType event to possibly load this newly installed LSP server
+				vim.api.nvim_exec_autocmds("FileType", { buffer = vim.api.nvim_get_current_buf() })
+			end, 100)
+		end)
 
-mr.refresh(function()
-	for _, tool in ipairs(mason_opts.ensure_installed) do
-		local p = mr.get_package(tool)
-		if not p:is_installed() then
-			p:install()
-		end
-	end
-end)
-vim.keymap.set("n", "<leader>pm", "<cmd>Mason<cr>", { remap = true, desc = "Mason" })
+		mr.refresh(function()
+			for _, tool in ipairs(vim.g.mason_opts.ensure_installed) do
+				local p = mr.get_package(tool)
+				if not p:is_installed() then
+					p:install()
+				end
+			end
+		end)
+		vim.keymap.set("n", "<leader>pm", "<cmd>Mason<cr>", { remap = true, desc = "Mason" })
+	end,
+})
+require("mason").setup(vim.g.mason_opts)
+
 local lsp_loaded = false
 Utils.create_autocmd_once({ "BufReadPre", "FileType", "BufNewFile" }, {
 	callback = function()
