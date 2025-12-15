@@ -63,7 +63,6 @@ require("mini.icons").setup({
 		dotenv = { glyph = "", hl = "MiniIconsYellow" },
 		yaml = { glyph = "", hl = "MiniIconsPurple" },
 		["yaml.chezmoitmpl"] = { glyph = "", hl = "MiniIconsPurple" },
-		outline = { glyph = "󰱺", hl = "MiniIconsYellow" },
 		nu = { glyph = "", hl = "MiniIconsGreen" },
 		nushell = { glyph = "", hl = "MiniIconsGreen" },
 	},

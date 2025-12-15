@@ -293,7 +293,6 @@ local opts = {
 	},
 	image = {
 		enabled = true,
-		doc = { enabled = true, inline = false, float = false, max_width = 80, max_height = 20 },
 	},
 	indent = {
 		enabled = true,
