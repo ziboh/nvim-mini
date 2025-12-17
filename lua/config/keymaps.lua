@@ -54,6 +54,7 @@ vim.keymap.set(
 -- smart-splits.nivm
 if not Utils.has("smart-splits.nvim") then
 	-- 使用 <C-h/j/k/l> 在窗口之间移动
+	vim.keymap.set("n", "<C-A-F8>", "<C-w>h", { desc = "Move to left split", noremap = true, silent = true })
 	vim.keymap.set("n", "<F32>", "<C-w>h", { desc = "Move to left split", noremap = true, silent = true })
 	vim.keymap.set("n", "<C-D-F8>", "<C-w>h", { desc = "Move to left split", noremap = true, silent = true })
 	vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to below split", noremap = true, silent = true })
