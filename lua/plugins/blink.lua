@@ -2,6 +2,7 @@ vim.pack.add({
 	{ src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.x") },
 	"https://github.com/xzbdmw/colorful-menu.nvim",
 	"https://github.com/saghen/blink.compat",
+	"https://github.com/bydlw98/blink-cmp-env",
 })
 Utils.create_autocmd_once("InsertEnter", {
 	callback = function()
@@ -68,8 +69,18 @@ Utils.create_autocmd_once("InsertEnter", {
 			},
 			sources = {
 				compat = { "supermaven" },
-				default = { "lsp", "path", "snippets", "buffer" },
+				default = { "lsp", "path", "snippets", "buffer", "env" },
 				providers = {
+					env = {
+						name = "Env",
+						module = "blink-cmp-env",
+						--- @type blink-cmp-env.Options
+						opts = {
+							item_kind = require("blink.cmp.types").CompletionItemKind.Variable,
+							show_braces = false,
+							show_documentation_window = true,
+						},
+					},
 					lsp = {
 						transform_items = function(_, items)
 							-- the default transformer will do this
