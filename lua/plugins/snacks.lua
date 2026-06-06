@@ -351,6 +351,11 @@ local opts = {
 		},
 	},
 	words = { enabled = true },
+	bigfile = {
+		-- your bigfile configuration comes here
+		-- or leave it empty to use the default settings
+		-- refer to the configuration section below
+	},
 }
 if Utils.is_win() then
 	local scripts_path = vim.env.HOME .. "\\Documents\\Nushell\\Scripts\\edit_nvim_remote.nu"

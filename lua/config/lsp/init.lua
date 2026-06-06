@@ -197,6 +197,7 @@ Utils.create_autocmd_once({ "BufReadPre", "FileType", "BufNewFile" }, {
 						},
 					},
 				},
+				taplo = {},
 				lua_ls = {},
 				bashls = {
 					mason = true,
